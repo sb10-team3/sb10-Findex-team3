@@ -16,7 +16,7 @@ import java.util.UUID;
 @Table(name = "sync_jobs")
 public class SyncJob {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotNull
