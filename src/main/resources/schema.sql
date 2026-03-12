@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS sync_jobs
     job_time      TIMESTAMPTZ NOT NULL,
     result        VARCHAR(7)  NOT NULL CHECK (job_type IN ('SUCCESS', 'FAILURE')),
     UNIQUE (index_info_id),
-    FOREIGN KEY (index_info_id) REFERENCES index_info (id) ON DELETE CASCADE
+    FOREIGN KEY (index_info_id) REFERENCES index_infos (id) ON DELETE CASCADE
     );
 
 CREATE TABLE IF NOT EXISTS index_datas
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS index_datas
     trading_price       BIGINT         NOT NULL,
     market_total_amount BIGINT         NOT NULL,
     UNIQUE (index_info_id, base_date),
-    FOREIGN KEY (index_info_id) REFERENCES index_info (id) ON DELETE CASCADE
+    FOREIGN KEY (index_info_id) REFERENCES index_infos (id) ON DELETE CASCADE
     );
 
 CREATE TABLE IF NOT EXISTS auto_sync_configs
@@ -51,5 +51,5 @@ CREATE TABLE IF NOT EXISTS auto_sync_configs
     "index_info_id" UUID    NOT NULL,
     "enabled"       BOOLEAN NULL,
     UNIQUE (index_info_id),
-    FOREIGN KEY (index_info_id) REFERENCES index_info (id) ON DELETE CASCADE
+    FOREIGN KEY (index_info_id) REFERENCES index_infos (id) ON DELETE CASCADE
     );
