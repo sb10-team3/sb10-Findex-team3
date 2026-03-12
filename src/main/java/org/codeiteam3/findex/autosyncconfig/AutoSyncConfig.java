@@ -16,6 +16,7 @@ public class AutoSyncConfig {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "index_info_id", nullable = false, unique = true)
     private IndexInfo indexInfo;
 
