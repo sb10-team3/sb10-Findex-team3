@@ -8,7 +8,7 @@ import org.codeiteam3.findex.indexinfo.IndexInfo;
 import java.util.UUID;
 
 @Entity
-@Table(name = "auto_sync_config")
+@Table(name = "auto_sync_configs")
 @NoArgsConstructor
 @Getter
 public class AutoSyncConfig {
