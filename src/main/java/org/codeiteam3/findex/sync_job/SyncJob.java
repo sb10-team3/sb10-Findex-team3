@@ -3,12 +3,14 @@ package org.codeiteam3.findex.sync_job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Table(name = "sync_jobs")
@@ -45,6 +47,4 @@ public class SyncJob {
     @NotNull
     @Column(name = "status", length = 7)
     private Result result;
-
-
 }
