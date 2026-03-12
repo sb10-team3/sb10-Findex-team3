@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS index_info
+CREATE TABLE IF NOT EXISTS index_infos
 (
     id                     UUID           PRIMARY KEY,
     index_classification   VARCHAR(100)   NOT NULL,
@@ -21,12 +21,12 @@ CREATE TABLE IF NOT EXISTS sync_jobs
     target_date   TIMESTAMPTZ NOT NULL,
     worker        VARCHAR(15) NOT NULL,
     job_time      TIMESTAMPTZ NOT NULL,
-    result        VARCHAR(7)  NOT NULL,
+    result        VARCHAR(7)  NOT NULL CHECK (job_type IN ('SUCCESS', 'FAILURE')),
     UNIQUE (index_info_id),
     FOREIGN KEY (index_info_id) REFERENCES index_info (id) ON DELETE CASCADE
     );
 
-CREATE TABLE IF NOT EXISTS index_data
+CREATE TABLE IF NOT EXISTS index_datas
 (
     id                  UUID PRIMARY KEY,
     index_info_id       UUID           NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS index_data
     FOREIGN KEY (index_info_id) REFERENCES index_info (id) ON DELETE CASCADE
     );
 
-CREATE TABLE IF NOT EXISTS auto_sync_config
+CREATE TABLE IF NOT EXISTS auto_sync_configs
 (
     "id"            UUID    NOT NULL,
     "index_info_id" UUID    NOT NULL,
