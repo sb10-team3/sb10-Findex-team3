@@ -78,7 +78,20 @@ public class IndexData {
     @Column(name = "market_total_amount", nullable = false)
     private Long marketTotalAmount;
 
-    public IndexData(IndexInfo indexInfo, LocalDate baseDate, SourceType sourceType, BigDecimal marketPrice, BigDecimal closingPrice, BigDecimal highPrice, BigDecimal lowPrice, BigDecimal versus, BigDecimal fluctuationRate, Long tradingQuantity, Long tradingPrice, Long marketTotalAmount) {
+    public IndexData(
+            IndexInfo indexInfo,
+            LocalDate baseDate,
+            SourceType sourceType,
+            BigDecimal marketPrice,
+            BigDecimal closingPrice,
+            BigDecimal highPrice,
+            BigDecimal lowPrice,
+            BigDecimal versus,
+            BigDecimal fluctuationRate,
+            Long tradingQuantity,
+            Long tradingPrice,
+            Long marketTotalAmount
+    ) {
         this.indexInfo = indexInfo;
         this.baseDate = baseDate;
         this.sourceType = sourceType;
