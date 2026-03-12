@@ -8,7 +8,7 @@ import org.codeiteam3.findex.indexinfo.IndexInfo;
 import java.util.UUID;
 
 @Entity
-@Table(name = "auto_sync_config")
+@Table(name = "auto_sync_configs")
 @NoArgsConstructor
 @Getter
 public class AutoSyncConfig {
@@ -16,7 +16,7 @@ public class AutoSyncConfig {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "index_info_id", nullable = false, unique = true)
     private IndexInfo indexInfo;
 
