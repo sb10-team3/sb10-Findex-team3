@@ -3,11 +3,11 @@ package org.codeiteam3.findex.indexdata.repository;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
-    // CRUD 메서드
-
+    boolean existsByIndexInfoIdAndBaseDate(UUID indexInfoId, LocalDate baseDate);
 
 
 
