@@ -1,3 +1,7 @@
 spring:
   application:
     name: Findex
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}

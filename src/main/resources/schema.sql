@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS sync_jobs
     target_date   TIMESTAMPTZ NOT NULL,
     worker        VARCHAR(15) NOT NULL,
     job_time      TIMESTAMPTZ NOT NULL,
-    result        VARCHAR(7)  NOT NULL,
+    result        VARCHAR(7)  NOT NULL CHECK (job_type IN ('SUCCESS', 'FAILURE')),
     UNIQUE (index_info_id),
     FOREIGN KEY (index_info_id) REFERENCES index_info (id) ON DELETE CASCADE
     );
