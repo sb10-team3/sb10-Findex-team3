@@ -1,5 +1,6 @@
-package org.codeiteam3.findex.indexdata;
+package org.codeiteam3.findex.indexdata.repository;
 
+import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
