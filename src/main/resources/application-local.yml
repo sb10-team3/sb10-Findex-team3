@@ -6,12 +6,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     open-in-view: false
   sql:
     init:
       mode: always
+      schema-locations: classpath:schema.sql
 
 logging:
   level:
