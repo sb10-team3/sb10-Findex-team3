@@ -17,7 +17,7 @@ public class SyncJob {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "index_info_id", nullable = false)
+    @JoinColumn(name = "index_info_id", nullable = false, unique = true)
     private IndexInfo indexInfoId;
 
     @Enumerated(EnumType.STRING)
