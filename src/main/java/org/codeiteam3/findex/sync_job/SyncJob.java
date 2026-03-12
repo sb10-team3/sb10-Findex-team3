@@ -3,6 +3,7 @@ package org.codeiteam3.findex.sync_job;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.codeiteam3.findex.indexinfo.IndexInfo;
 
 import java.time.Instant;
 import java.util.UUID;
