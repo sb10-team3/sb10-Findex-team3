@@ -1,8 +1,6 @@
 package org.codeiteam3.findex.sync_job;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,33 +16,24 @@ public class SyncJob {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "index_info_id", nullable = false)
     private IndexInfo indexInfoId;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "job_type", length = 10)
-    @Size(max = 10)
+    @Column(name = "job_type", length = 10, nullable = false)
     private JobType jobType;
 
-    @NotNull
-    @Column(name = "target_date")
+    @Column(name = "target_date", nullable = false)
     private Instant targetDate;
 
-    @Size(max = 15)
-    @NotNull
-    @Column(name = "worker", length = 15)
+    @Column(name = "worker", length = 15, nullable = false)
     private String worker;
 
-    @NotNull
-    @Column(name = "job_time")
+    @Column(name = "job_time", nullable = false)
     private Instant jobTime;
 
-    @Size(max = 7)
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 7)
+    @Column(name = "status", length = 7, nullable = false)
     private Result result;
 }
