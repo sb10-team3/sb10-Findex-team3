@@ -45,6 +45,7 @@ public class SyncJob {
 
     @Size(max = 7)
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 7)
     private Result result;
 }
