@@ -2,7 +2,7 @@ package org.codeiteam3.findex.sync_job.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.indexdata.IndexDataRepository;
+import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.codeiteam3.findex.sync_job.JobType;
