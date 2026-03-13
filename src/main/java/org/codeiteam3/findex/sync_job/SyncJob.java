@@ -26,13 +26,13 @@ public class SyncJob {
     private JobType jobType;
 
     @Column(name = "target_date", nullable = false)
-    private Instant targetDate;
+    private LocalDate targetDate;
 
     @Column(name = "worker", length = 15, nullable = false)
     private String worker;
 
     @Column(name = "job_time", nullable = false)
-    private Instant jobTime;
+    private LocalDate jobTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result", length = 7, nullable = false)
