@@ -35,6 +35,6 @@ public class SyncJob {
     private Instant jobTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 7, nullable = false)
+    @Column(name = "result", length = 7, nullable = false)
     private Result result;
 }
