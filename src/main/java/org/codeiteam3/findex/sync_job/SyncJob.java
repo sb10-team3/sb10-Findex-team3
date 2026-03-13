@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.codeiteam3.findex.indexinfo.IndexInfo;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class SyncJob {
     @Column(name = "job_type", length = 10, nullable = false)
     private JobType jobType;
 
-    @Column(name = "target_date", nullable = false)
+    @Column(name = "target_date")
     private LocalDate targetDate;
 
     @Column(name = "worker", length = 15, nullable = false)
@@ -37,4 +37,13 @@ public class SyncJob {
     @Enumerated(EnumType.STRING)
     @Column(name = "result", length = 7, nullable = false)
     private Result result;
+
+    public SyncJob(IndexInfo indexInfo, JobType jobType, LocalDate targetDate, String worker, LocalDate jobTime, Result result) {
+        this.indexInfo = indexInfo;
+        this.jobType = jobType;
+        this.targetDate = targetDate;
+        this.worker = worker;
+        this.jobTime = jobTime;
+        this.result = result;
+    }
 }
