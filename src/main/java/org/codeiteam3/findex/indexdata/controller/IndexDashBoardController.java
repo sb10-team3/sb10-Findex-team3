@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.enums.PeriodType;
 import org.codeiteam3.findex.indexdata.dto.IndexChartDto;
+import org.codeiteam3.findex.indexdata.dto.RankedIndexPerformanceDto;
 import org.codeiteam3.findex.indexdata.service.IndexDashBoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +23,13 @@ public class IndexDashBoardController {
                                          @RequestParam(required = false) PeriodType periodType){
         IndexChartDto response = indexDashBoardService.find(indexInfoId, periodType);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/perfomance/rank")
+    public ResponseEntity<RankedIndexPerformanceDto> findIndexPeformanceRank(
+            @RequestParam(required = false) UUID indexInfoId,
+            @RequestParam(required = false) PeriodType periodType,
+            @RequestParam(required = false, defaultValue = "10") Integer limit){
+
     }
 }
