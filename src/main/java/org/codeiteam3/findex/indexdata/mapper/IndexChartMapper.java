@@ -18,7 +18,7 @@ public interface IndexChartMapper {
     @Mapping(target = "indexName", source = "indexInfo.indexName")
     IndexChartDto toDto(IndexInfo indexInfo,
                                PeriodType periodType,
-                               List<ChartDataPoint> price,
-                               List<ChartDataPoint> avg5,
-                               List<ChartDataPoint> avg20);
+                               List<ChartDataPoint> dataPoints,
+                               List<ChartDataPoint> ma5DataPoints,
+                               List<ChartDataPoint> ma20DataPoints);
 }
