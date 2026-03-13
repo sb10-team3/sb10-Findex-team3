@@ -3,7 +3,7 @@ package org.codeiteam3.findex.sync_job;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.codeiteam3.findex.indexinfo.IndexInfo;
+import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -35,6 +35,6 @@ public class SyncJob {
     private Instant jobTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 7, nullable = false)
+    @Column(name = "", length = 7, nullable = false)
     private Result result;
 }
