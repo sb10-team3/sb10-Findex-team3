@@ -1,6 +1,6 @@
 package org.codeiteam3.findex.enums;
 
 public enum SourceType {
-    USERS,
+    USER,
     OPEN_API
 }
