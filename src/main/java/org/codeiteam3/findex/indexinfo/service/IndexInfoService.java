@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -51,6 +53,12 @@ public class IndexInfoService {
         autoSyncConfigRepository.save(config);
 
         return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public IndexInfo findById(UUID id){
+        return indexInfoRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " 지수 정보가 없습니다."));
+
     }
 
 }
