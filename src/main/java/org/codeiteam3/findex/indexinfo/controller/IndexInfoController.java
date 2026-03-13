@@ -1,5 +1,6 @@
 package org.codeiteam3.findex.indexinfo.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
@@ -21,7 +22,7 @@ public class IndexInfoController {
     private final IndexInfoMapper indexInfoMapper;
 
     @PostMapping
-    public ResponseEntity<IndexInfoDto> create(@RequestBody IndexInfoCreateRequest indexInfoCreateRequest) {
+    public ResponseEntity<IndexInfoDto> create(@Valid @RequestBody IndexInfoCreateRequest indexInfoCreateRequest) {
         IndexInfo indexInfo = indexInfoService.create(indexInfoCreateRequest);
 
         IndexInfoDto indexInfoDto = indexInfoMapper.toDto(indexInfo);
