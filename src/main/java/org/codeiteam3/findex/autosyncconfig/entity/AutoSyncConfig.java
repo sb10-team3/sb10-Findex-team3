@@ -22,4 +22,9 @@ public class AutoSyncConfig {
 
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
+
+    public AutoSyncConfig(IndexInfo indexInfo, boolean enabled) {
+        this.indexInfo = indexInfo;
+        this.enabled = enabled;
+    }
 }
