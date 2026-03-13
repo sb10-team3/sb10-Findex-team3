@@ -7,6 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SyncJobMapper {
-    @Mapping(target = "id", source = "indexInfo.id")
+    @Mapping(target = "indexInfoId", source = "indexInfo.id")
     SyncJobDto toDto(SyncJob syncJob);
 }
