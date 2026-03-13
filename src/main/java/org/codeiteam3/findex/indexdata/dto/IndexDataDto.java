@@ -1,9 +1,7 @@
 package org.codeiteam3.findex.indexdata.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import org.codeiteam3.findex.SourceType;
+import org.codeiteam3.findex.enums.SourceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

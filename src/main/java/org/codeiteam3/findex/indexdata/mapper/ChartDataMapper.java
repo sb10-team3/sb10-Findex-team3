@@ -8,6 +8,5 @@ import java.time.LocalDate;
 
 @Mapper(componentModel = "spring")
 public interface ChartDataMapper {
-
-    ChartDataPoint toDto(LocalDate baseData, BigDecimal price);
+    ChartDataPoint toDto(LocalDate date, BigDecimal value);
 }
