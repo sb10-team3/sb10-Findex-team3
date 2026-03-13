@@ -1,9 +1,9 @@
 package org.codeiteam3.findex.indexinfo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.SourceType;
-import org.codeiteam3.findex.autosyncconfig.entity.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
 import org.codeiteam3.findex.autosyncconfig.repository.AutoSyncConfigRepository;
+import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRespository;

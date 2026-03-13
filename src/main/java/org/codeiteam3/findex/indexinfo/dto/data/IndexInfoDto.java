@@ -1,6 +1,7 @@
 package org.codeiteam3.findex.indexinfo.dto.data;
 
-import org.codeiteam3.findex.SourceType;
+
+import org.codeiteam3.findex.enums.SourceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
