@@ -18,6 +18,6 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
 
 
-    // 대시보드 메서드
+    // 대쉬보드 메서드
     List<IndexData> findByIndexInfoIdOrderByBaseDate(UUID indexInfoId);
 }
