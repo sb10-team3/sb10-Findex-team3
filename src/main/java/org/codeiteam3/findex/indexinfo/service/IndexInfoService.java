@@ -6,11 +6,10 @@ import org.codeiteam3.findex.autosyncconfig.repository.AutoSyncConfigRepository;
 import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
-import org.codeiteam3.findex.indexinfo.repository.IndexInfoRespository;
+import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ import java.time.LocalDate;
 @Transactional
 public class IndexInfoService {
 
-    private final IndexInfoRespository indexInfoRepository;
+    private final IndexInfoRepository indexInfoRepository;
     private final AutoSyncConfigRepository autoSyncConfigRepository;
 
     public IndexInfo create(IndexInfoCreateRequest request){
