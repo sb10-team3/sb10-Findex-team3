@@ -1,9 +1,8 @@
 package org.codeiteam3.findex.sync_job.dto;
 
-import org.codeiteam3.findex.sync_job.JobType;
-import org.codeiteam3.findex.sync_job.Result;
+import org.codeiteam3.findex.enums.JobType;
+import org.codeiteam3.findex.enums.Result;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 

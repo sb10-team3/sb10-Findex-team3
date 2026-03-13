@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.sync_job;
+package org.codeiteam3.findex.enums;
 
 public enum JobType {
     INDEX_DATA,
