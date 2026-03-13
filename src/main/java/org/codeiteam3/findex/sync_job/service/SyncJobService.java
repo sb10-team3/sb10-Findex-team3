@@ -225,6 +225,7 @@ public class SyncJobService {
                 pageNo++;
 
             }
+            pageNo = 1;
         }
 
         return dtoList;
