@@ -28,7 +28,8 @@ public class IndexDashBoardService {
     @Transactional(readOnly = true)
     public IndexChartDto find(UUID indexInfoId, PeriodType periodType){
         List<IndexData> dataList = indexDataRepository.findByIndexInfoIdOrderByBaseDate(indexInfoId);
-        IndexInfo indexInfo = indexInfoRepository.find(indexInfoId);
+        IndexInfo indexInfo = indexInfoRepository.findById(indexInfoId)
+                .orElseThrow(() -> new NoSuchElementException());
 
 
         // 5일 이동평균선 데이터
