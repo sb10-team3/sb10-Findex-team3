@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.indexdata;
+package org.codeiteam3.findex.indexdata.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import org.codeiteam3.findex.SourceType;
 import org.codeiteam3.findex.indexinfo.IndexInfo;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
