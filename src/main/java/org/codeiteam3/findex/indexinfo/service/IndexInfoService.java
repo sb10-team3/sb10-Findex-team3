@@ -23,30 +23,11 @@ public class IndexInfoService {
 
     public IndexInfo create(IndexInfoCreateRequest request){
 
-        if (request.indexClassification() == null || request.indexClassification().isBlank()) {
-            throw new IllegalArgumentException("지수 분류명은 필수입니다.");
-        }
-
-        if (request.indexName() == null || request.indexName().isBlank()) {
-            throw new IllegalArgumentException("지수명은 필수입니다.");
-        }
         if (indexInfoRepository.existsByIndexClassificationAndIndexName(
                 request.indexClassification(),
                 request.indexName()
         )) {
             throw new IllegalArgumentException("이미 존재하는 지수입니다.");
-        }
-
-        if (request.employedItemsCount() == null || request.employedItemsCount() <= 0) {
-            throw new IllegalArgumentException("채용 종목 수는 1 이상이어야 합니다.");
-        }
-
-        if (request.baseIndex() == null || request.baseIndex().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("기준 지수는 0보다 커야 합니다.");
-        }
-
-        if (request.basePointInTime() == null) {
-            throw new IllegalArgumentException("기준 시점은 필수입니다.");
         }
 
         if (request.basePointInTime().isAfter(LocalDate.now())) {
@@ -65,6 +46,8 @@ public class IndexInfoService {
                 favorite
         );
         IndexInfo saved = indexInfoRepository.save(indexInfo);
+
+        //자동 연동 설정 초기화
         AutoSyncConfig config = new AutoSyncConfig(saved, false);
         autoSyncConfigRepository.save(config);
 
