@@ -6,6 +6,7 @@ import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.codeiteam3.findex.enums.JobType;
+import org.codeiteam3.findex.sync_job.dto.IndexDataSyncRequestDto;
 import org.codeiteam3.findex.sync_job.entity.SyncJob;
 import org.codeiteam3.findex.sync_job.dto.IndexApiResponseDto;
 import org.codeiteam3.findex.sync_job.dto.IndexApiResponseItemDto;
@@ -38,6 +39,7 @@ public class SyncJobService {
 
     private final String API_KEY = "5c1a32de77483aa31eb13746d9abd7b75b08d47e2d2256a38cda7a8c18f39d91";
 
+    //지수 정보
     public List<SyncJobDto> indexInfoSyncJob(String worker) {
         List<SyncJobDto> dtoList = new ArrayList<>();
 
@@ -163,4 +165,10 @@ public class SyncJobService {
                 SUCCESS
         );
     }
+
+    //여기부터 지수 데이터
+    public List<SyncJobDto> indexDataSyncJob(String worker, IndexDataSyncRequestDto requestDto){
+
+    }
+
 }
