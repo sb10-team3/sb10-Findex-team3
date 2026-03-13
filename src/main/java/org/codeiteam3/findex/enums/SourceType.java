@@ -1,4 +1,4 @@
-package org.codeiteam3.findex;
+package org.codeiteam3.findex.enums;
 
 public enum SourceType {
     USER,

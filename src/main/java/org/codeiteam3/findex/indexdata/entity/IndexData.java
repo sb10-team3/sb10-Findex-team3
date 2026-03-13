@@ -3,8 +3,8 @@ package org.codeiteam3.findex.indexdata.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.codeiteam3.findex.SourceType;
-import org.codeiteam3.findex.indexinfo.IndexInfo;
+import org.codeiteam3.findex.enums.SourceType;
+import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

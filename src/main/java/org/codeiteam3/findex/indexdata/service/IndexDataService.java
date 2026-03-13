@@ -1,13 +1,13 @@
 package org.codeiteam3.findex.indexdata.service;
 
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.SourceType;
+import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexdata.dto.IndexDataCreateRequest;
 import org.codeiteam3.findex.indexdata.dto.IndexDataDto;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.mapper.IndexDataMapper;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
-import org.codeiteam3.findex.indexinfo.IndexInfo;
+import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

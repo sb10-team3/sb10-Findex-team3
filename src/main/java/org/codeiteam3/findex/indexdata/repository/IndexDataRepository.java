@@ -4,6 +4,7 @@ import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
@@ -18,4 +19,5 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
 
     // 대쉬보드 메서드
+    List<IndexData> findByIndexInfoIdOrderByBaseDate(UUID indexInfoId);
 }
