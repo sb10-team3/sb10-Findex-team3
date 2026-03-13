@@ -9,6 +9,7 @@ import org.codeiteam3.findex.indexdata.mapper.ChartDataMapper;
 import org.codeiteam3.findex.indexdata.mapper.IndexChartMapper;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
+import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +19,11 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class IndexChartService {
+public class IndexDashBoardService {
     private IndexDataRepository indexDataRepository;
     private IndexChartMapper indexChartMapper;
     private ChartDataMapper chartDataMapper;
+    private IndexInfoRepository indexInfoRepository;
 
     @Transactional(readOnly = true)
     public IndexChartDto find(UUID indexInfoId, PeriodType periodType){
