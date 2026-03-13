@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS sync_jobs
     id            UUID PRIMARY KEY,
     index_info_id UUID        NOT NULL,
     job_type      VARCHAR(10) NOT NULL CHECK (job_type IN ('INDEX_INFO', 'INDEX_DATA')),
-    target_date   TIMESTAMPTZ NOT NULL,
+    target_date   TIMESTAMPTZ,
     worker        VARCHAR(15) NOT NULL,
     job_time      TIMESTAMPTZ NOT NULL,
     result        VARCHAR(7)  NOT NULL CHECK (result IN ('SUCCESS', 'FAILURE')),
