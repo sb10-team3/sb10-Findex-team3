@@ -1,8 +1,10 @@
-package org.codeiteam3.findex.sync_job;
+package org.codeiteam3.findex.sync_job.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.codeiteam3.findex.enums.JobType;
+import org.codeiteam3.findex.enums.Result;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 
 import java.time.LocalDate;

@@ -3,10 +3,10 @@ package org.codeiteam3.findex.sync_job.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
-import org.codeiteam3.findex.indexinfo.IndexInfo;
+import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
-import org.codeiteam3.findex.sync_job.JobType;
-import org.codeiteam3.findex.sync_job.SyncJob;
+import org.codeiteam3.findex.enums.JobType;
+import org.codeiteam3.findex.sync_job.entity.SyncJob;
 import org.codeiteam3.findex.sync_job.dto.IndexApiResponseDto;
 import org.codeiteam3.findex.sync_job.dto.IndexApiResponseItemDto;
 import org.codeiteam3.findex.sync_job.dto.SyncJobDto;
@@ -23,9 +23,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.codeiteam3.findex.SourceType.OPEN_API;
-import static org.codeiteam3.findex.sync_job.Result.FAILURE;
-import static org.codeiteam3.findex.sync_job.Result.SUCCESS;
+import static org.codeiteam3.findex.enums.SourceType.OPEN_API;
+import static org.codeiteam3.findex.enums.Result.FAILURE;
+import static org.codeiteam3.findex.enums.Result.SUCCESS;
 
 @Service
 @RequiredArgsConstructor
