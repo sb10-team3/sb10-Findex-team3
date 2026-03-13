@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping(value = "/api/index-data")
 @Tag(name = "지수 대쉬보드 API", description = "지수 대쉬보드 관리 API")
 public class IndexDashBoardController {
-    private IndexDashBoardService indexDashBoardService;
+    private final IndexDashBoardService indexDashBoardService;
 
     @GetMapping(value = "/{id}/chart")
     public ResponseEntity<IndexChartDto> findIndexChart(@PathVariable("id") UUID indexInfoId,

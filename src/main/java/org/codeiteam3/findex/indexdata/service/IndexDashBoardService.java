@@ -20,10 +20,10 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class IndexDashBoardService {
-    private IndexDataRepository indexDataRepository;
-    private IndexChartMapper indexChartMapper;
-    private ChartDataMapper chartDataMapper;
-    private IndexInfoRepository indexInfoRepository;
+    private final IndexDataRepository indexDataRepository;
+    private final IndexChartMapper indexChartMapper;
+    private final ChartDataMapper chartDataMapper;
+    private final IndexInfoRepository indexInfoRepository;
 
     @Transactional(readOnly = true)
     public IndexChartDto find(UUID indexInfoId, PeriodType periodType){
