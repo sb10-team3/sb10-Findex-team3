@@ -1,10 +1,9 @@
-package org.codeiteam3.findex.indexinfo;
+package org.codeiteam3.findex.indexinfo.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.codeiteam3.findex.SourceType;
+import org.codeiteam3.findex.enums.SourceType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -62,4 +61,26 @@ public class IndexInfo {
         this.sourceType = sourceType;
         this.favorite = favorite;
     }
+
+
+    public void update(Integer employedItemsCount, LocalDate basePointInTime, BigDecimal baseIndex, Boolean favorite) {
+        if (employedItemsCount != null) {
+            this.employedItemsCount = employedItemsCount;
+        }
+
+        if (basePointInTime != null) {
+            this.basePointInTime = basePointInTime;
+        }
+
+        if (baseIndex != null) {
+            this.baseIndex = baseIndex;
+        }
+
+        if (favorite != null) {
+            this.favorite = favorite;
+        }
+    }
+
+
+
 }
