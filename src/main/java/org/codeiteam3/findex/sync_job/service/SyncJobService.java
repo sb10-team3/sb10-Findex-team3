@@ -2,6 +2,7 @@ package org.codeiteam3.findex.sync_job.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
@@ -101,6 +102,7 @@ public class SyncJobService {
         return dtoList;
     }
 
+    //내부에서 쓰는 메서드
     @Transactional
     public SyncJob indexInfoSync(IndexApiResponseItemDto item, String worker){
         IndexInfo indexInfo = indexInfoRepository.findByIndexClassificationAndIndexNameAndSourceType(
@@ -168,7 +170,119 @@ public class SyncJobService {
 
     //여기부터 지수 데이터
     public List<SyncJobDto> indexDataSyncJob(String worker, IndexDataSyncRequestDto requestDto){
+        int pageNo = 1;
+        int numOfRows = 100;
 
+        List<SyncJobDto> dtoList = new ArrayList<>();
+
+        List<IndexInfo> indexInfoList = indexInfoRepository.findAllById(requestDto.indexInfoIds());
+
+        for(IndexInfo indexInfo : indexInfoList){
+            while(true){
+                int finalPageNo = pageNo;
+                IndexApiResponseDto indexApiResponse = webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .queryParam("serviceKey", API_KEY)
+                                .queryParam("resultType", "json")
+                                .queryParam("idxNm", indexInfo.getIndexName())
+                                .queryParam("beginBasDt", requestDto.baseDateFrom().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                                .queryParam("endBasDt", requestDto.baseDateTo().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                                .queryParam("pageNo", finalPageNo)
+                                .queryParam("numOfRows", numOfRows)
+                                .build()
+                        )
+                        .retrieve()
+                        .bodyToMono(IndexApiResponseDto.class)
+                        .block();
+
+                if(indexApiResponse == null){
+                    throw new ExternalApiException("외부 api 응답이 null입니다.");
+                }
+
+                if(indexApiResponse.response() == null){
+                    throw new ExternalApiException("외부 api 응답이 null입니다.");
+                }
+
+                if(indexApiResponse.response().body() == null){
+                    break;
+                }
+
+                if(indexApiResponse.response().body().items() == null){
+                    break;
+                }
+
+                List<IndexApiResponseItemDto> items = indexApiResponse.response().body().items().item();
+
+                if(items == null || items.isEmpty()){
+                    break;
+                }
+
+                for(IndexApiResponseItemDto item : items){
+                    SyncJob syncJob = indexDataSync(item, indexInfo, worker);
+                    syncJobRepository.save(syncJob);
+                    dtoList.add(syncJobMapper.toDto(syncJob));
+                }
+                pageNo++;
+
+            }
+        }
+
+        return dtoList;
+    }
+
+    //데이터 연동과정에서 쓰는 메서드
+    private SyncJob indexDataSync(IndexApiResponseItemDto item, IndexInfo indexInfo, String worker){
+        try{
+            //이미 있으면 갱신 안함
+            if(indexDataRepository.existsByIndexInfo_IndexNameAndIndexInfo_IndexClassificationAndBaseDate(
+                    indexInfo.getIndexName(),
+                    indexInfo.getIndexClassification(),
+                    LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")))
+            ){
+                return new SyncJob(
+                        indexInfo,
+                        JobType.INDEX_DATA,
+                        LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                        worker,
+                        LocalDate.now(),
+                        FAILURE
+                );
+            }
+            else{
+                indexDataRepository.save(new IndexData(
+                        indexInfo,
+                        LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                        OPEN_API,
+                        new BigDecimal(item.mkp()),
+                        new BigDecimal(item.clpr()),
+                        new BigDecimal(item.hipr()),
+                        new BigDecimal(item.lopr()),
+                        new BigDecimal(item.vs()),
+                        new BigDecimal(item.fltRt()),
+                        Long.parseLong(item.trqu()),
+                        Long.parseLong(item.trPrc()),
+                        Long.parseLong(item.lstgMrktTotAmt())
+                ));
+
+                return new SyncJob(
+                        indexInfo,
+                        JobType.INDEX_DATA,
+                        LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                        worker,
+                        LocalDate.now(),
+                        SUCCESS
+                );
+            }
+        }catch (DataAccessException e){
+            return new SyncJob(
+                    indexInfo,
+                    JobType.INDEX_DATA,
+                    LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                    worker,
+                    LocalDate.now(),
+                    FAILURE
+            );
+        }
     }
 
 }
