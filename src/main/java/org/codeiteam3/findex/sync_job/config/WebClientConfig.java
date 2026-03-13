@@ -8,7 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
     @Bean
     public WebClient webClient() {
-        return WebClient.builder().build();
+        return WebClient.builder()
+                .baseUrl("https://apis.data.go.kr/1160100/service/GetMarketIndexInfoService/getStockMarketIndex")
+                .build();
     }
 }
 
