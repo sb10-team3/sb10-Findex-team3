@@ -3,7 +3,7 @@ package org.codeiteam3.findex.indexinfo.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.codeiteam3.findex.SourceType;
+import org.codeiteam3.findex.enums.SourceType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
