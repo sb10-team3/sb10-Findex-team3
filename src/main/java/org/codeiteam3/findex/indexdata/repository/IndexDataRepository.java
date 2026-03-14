@@ -48,9 +48,61 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             Pageable pageable
     );
 
+    // 정렬 기준이 Long일 때
+    @Query("SELECT i FROM IndexData AS i " +
+            "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
+            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
+            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND (:cursor IS NULL " +
+            "OR CASE " +
+            "   WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "   WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "   WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "END < :cursor " +
+            "   OR (CASE " +
+            "       WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "       WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "       WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "   END = :cursor AND i.id < :isAfter))")
+    Slice<IndexData> findAllByLongCursorDesc(
+            @Param("indexInfoId") UUID indexInfoId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("isAfter") UUID isAfter,
+            @Param("cursor") Long normalizedCursor,
+            @Param("sortField") String normalizedSortField,
+            Pageable pageable
+    );
+    @Query("SELECT i FROM IndexData AS i " +
+            "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
+            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
+            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND (:cursor IS NULL " +
+            "OR CASE " +
+            "   WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "   WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "   WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "END > :cursor " +
+            "   OR (CASE " +
+            "       WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "       WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "       WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "   END = :cursor AND i.id > :isAfter))")
+    Slice<IndexData> findAllByLongCursorAsc(
+            @Param("indexInfoId") UUID indexInfoId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("isAfter") UUID isAfter,
+            @Param("cursor") Long normalizedCursor,
+            @Param("sortField") String normalizedSortField,
+            Pageable pageable
+    );
+
 
 
 
     // 대쉬보드 메서드
     List<IndexData> findByIndexInfoIdOrderByBaseDate(UUID indexInfoId);
+
+    UUID id(UUID id);
 }
