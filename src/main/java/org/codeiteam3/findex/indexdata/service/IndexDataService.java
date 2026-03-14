@@ -1,7 +1,9 @@
 package org.codeiteam3.findex.indexdata.service;
 
 import lombok.RequiredArgsConstructor;
+import org.codeiteam3.findex.common.CursorPageResponseMapper;
 import org.codeiteam3.findex.enums.SourceType;
+import org.codeiteam3.findex.indexdata.dto.CursorPageResponseIndexDataDto;
 import org.codeiteam3.findex.indexdata.dto.IndexDataCreateRequest;
 import org.codeiteam3.findex.indexdata.dto.IndexDataDto;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
@@ -9,11 +11,16 @@ import org.codeiteam3.findex.indexdata.mapper.IndexDataMapper;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -23,7 +30,9 @@ public class IndexDataService {
     private final IndexDataRepository indexDataRepository;
     private final IndexInfoRepository indexInfoRepository;
     private final IndexDataMapper indexDataMapper;
+    private final CursorPageResponseMapper cursorPageResponseMapper;
 
+    // 지수 데이터 등록
     public IndexDataDto create(IndexDataCreateRequest request) {
         UUID indexInfoId = request.indexInfoId();
 
@@ -71,5 +80,38 @@ public class IndexDataService {
         indexDataRepository.save(indexData);
 
         return indexDataMapper.toDto(indexData);
+    }
+
+    // 지수 데이터 조회
+    public CursorPageResponseIndexDataDto findAll(UUID indexInfoId, LocalDate startDate, LocalDate endDate, UUID idAfter, String cursor, String sortField, String sortDirection, int size) {
+        // validate
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException(" 종료 일자(endDate)는 시작 일자(startDate)보다 앞설 수 없습니다.");
+        }
+        if (size < 1) {
+            throw new IllegalArgumentException(" 페이지 크기(size)는 1 이상이어야 합니다.");
+        }
+
+        // 지수 데이터 존재 확인
+        indexInfoRepository.findById(indexInfoId)
+                .orElseThrow(() ->new NoSuchElementException(indexInfoId + "를 가진 IndexInfo를 찾을 수 없습니다."));
+
+        // cursor
+        String normalizedCursor  = (cursor == null || cursor.isBlank()) ? null : cursor;
+
+        // sortField
+        Set<String> allowField = Set.of("baseDate", "marketPrice", "closingPrice", "highPrice", "lowPrice", "versus", "fluctuationRate", "tradingQuantity", "tradingPrice", "marketTotalAmount");
+        if (!allowField.contains(sortField)) {
+            throw new IllegalArgumentException("적합하지 않은 정렬필드(sortField)입니다.");
+        }
+        String normalizedSortField = sortField;
+
+        // 정렬
+        Sort.Direction normalizedDirection = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        // Pageable (cursor, sortField, 정렬, 갯수 적용)
+        Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection, "id")));
+
+        return null;
     }
 }
