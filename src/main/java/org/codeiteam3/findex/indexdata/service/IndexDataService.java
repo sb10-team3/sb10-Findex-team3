@@ -118,4 +118,37 @@ public class IndexDataService {
 
         return null;
     }
+
+    private Slice findIndexDataSlice(
+            UUID indexInfoId,
+            LocalDate startDate,
+            LocalDate endDate,
+            UUID idAfter,
+            String normalizedCursor,
+            String normalizedSortField,
+            Sort.Direction normalizedDirection,
+            Pageable pageable
+    ) {
+        // switch 문으로 sortField의 타입에 따라 다른 repo 메서드 사용
+        return switch (normalizedSortField) {
+            case "baseDate" -> normalizedDirection.isDescending()
+                    ? indexDataRepository.findAllByBaseDateCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable)
+                    : indexDataRepository.findAllByBaseDateCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable);
+            default -> throw new IllegalArgumentException("제대로 되지 않음 sortField 입니다.");
+        };
+    }
+
+    // String(문자열) -> 다른 타입으로 parse
+    // String -> LocalDate
+    private LocalDate parseLocalDateCursor(String cursor) {
+        return LocalDate.parse(cursor);
+    }
+    // String -> BigDecimal
+    private BigDecimal parseBigDecimalCursor(String cursor) {
+        return new BigDecimal(cursor);
+    }
+    // String -> Long
+    private Long parseLongCursor(String cursor) {
+        return Long.parseLong(cursor);
+    }
 }
