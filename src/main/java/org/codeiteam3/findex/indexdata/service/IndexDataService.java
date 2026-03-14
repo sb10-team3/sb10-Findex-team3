@@ -134,6 +134,9 @@ public class IndexDataService {
             case "baseDate" -> normalizedDirection.isDescending()
                     ? indexDataRepository.findAllByBaseDateCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable)
                     : indexDataRepository.findAllByBaseDateCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable);
+            case "tradingQuantity", "tradingPrice", "marketTotalAmount" -> normalizedDirection.isDescending()
+                    ? indexDataRepository.findAllByLongCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable)
+                    : indexDataRepository.findAllByLongCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable);
             default -> throw new IllegalArgumentException("제대로 되지 않음 sortField 입니다.");
         };
     }
