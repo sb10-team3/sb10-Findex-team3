@@ -13,6 +13,7 @@ import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,6 +112,9 @@ public class IndexDataService {
 
         // Pageable (cursor, sortField, 정렬, 갯수 적용)
         Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection, "id")));
+
+        // 정렬에 따라 조회된 전체 데이터 수
+        Long totalElements = indexDataRepository.countElements(indexInfoId, startDate, endDate);
 
         return null;
     }
