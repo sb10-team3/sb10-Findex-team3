@@ -16,16 +16,16 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
     @Query("SELECT COUNT(i) FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "AND (:endDate IS NULL OR i.baseDate <= :endDate)")
+            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
+            "   AND (:endDate IS NULL OR i.baseDate <= :endDate)")
     Long countElements(@Param("indexInfoId") UUID indexInfoId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // 정렬 기준이 LocalDate일 때
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
-            "AND (:cursor IS NULL OR i.baseDate < :cursor OR (i.baseDate = :cursor AND i.id < :idAfter))")
+            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
+            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND (:cursor IS NULL OR i.baseDate < :cursor OR (i.baseDate = :cursor AND i.id < :idAfter))")
     Slice<IndexData> findAllByBaseDateCursorDesc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
@@ -36,9 +36,9 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     );
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
-            "AND (:cursor IS NULL OR i.baseDate > :cursor OR (i.baseDate = :cursor AND i.id > :idAfter))")
+            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
+            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND (:cursor IS NULL OR i.baseDate > :cursor OR (i.baseDate = :cursor AND i.id > :idAfter))")
     Slice<IndexData> findAllByBaseDateCursorAsc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
