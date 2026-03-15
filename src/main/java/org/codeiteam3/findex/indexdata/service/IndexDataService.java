@@ -1,6 +1,7 @@
 package org.codeiteam3.findex.indexdata.service;
 
 import lombok.RequiredArgsConstructor;
+import org.codeiteam3.findex.common.CursorPageResponse;
 import org.codeiteam3.findex.common.CursorPageResponseMapper;
 import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexdata.dto.CursorPageResponseIndexDataDto;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
@@ -116,10 +118,30 @@ public class IndexDataService {
         // 조회 조건에 따라 계산된 전체 데이터 수
         Long totalElements = indexDataRepository.countElements(indexInfoId, startDate, endDate);
 
-        return null;
+        // 지수 데이터 조회
+        Slice<IndexDataDto> indexDataSlice = findIndexDataSlice(indexInfoId, startDate, endDate, idAfter, normalizedCursor, normalizedSortField, normalizedDirection, pageable)
+                .map(indexData -> indexDataMapper.toDto(indexData));
+        // 조회 데이터 중 마지막 요소
+        IndexDataDto lastIndexData = indexDataSlice.getContent().get(indexDataSlice.getNumberOfElements() - 1);
+
+        String nextCursor = null; // sortField에 따라 달라짐
+        UUID nextIdAfter = null;
+        if (indexDataSlice.hasNext()) {
+            nextCursor = findNextCursor(lastIndexData, normalizedSortField); // 다음 페이지 커서
+            nextIdAfter = lastIndexData.id(); // 마지막 요소 ID
+        }
+
+        CursorPageResponse<IndexDataDto> cursorPageResponse = cursorPageResponseMapper.fromSlice(
+                indexDataSlice,
+                nextCursor,
+                nextIdAfter,
+                totalElements
+        );
+
+        return new CursorPageResponseIndexDataDto(cursorPageResponse);
     }
 
-    private Slice findIndexDataSlice(
+    private Slice<IndexData> findIndexDataSlice(
             UUID indexInfoId,
             LocalDate startDate,
             LocalDate endDate,
@@ -156,5 +178,21 @@ public class IndexDataService {
     // String -> Long
     private Long parseLongCursor(String cursor) {
         return Long.parseLong(cursor);
+    }
+
+    private String findNextCursor(IndexDataDto lastIndexData, String normalizedSortField) {
+        return switch (normalizedSortField) {
+            case "baseDate" -> lastIndexData.baseDate().toString();
+            case "marketPrice" -> lastIndexData.marketPrice().toPlainString();
+            case "closingPrice" -> lastIndexData.closingPrice().toPlainString();
+            case "highPrice" -> lastIndexData.highPrice().toPlainString();
+            case "lowPrice" -> lastIndexData.lowPrice().toPlainString();
+            case "versus" -> lastIndexData.versus().toPlainString();
+            case "fluctuationRate" -> lastIndexData.fluctuationRate().toPlainString();
+            case "tradingQuantity" -> lastIndexData.tradingQuantity().toString();
+            case "tradingPrice" -> lastIndexData.tradingPrice().toString();
+            case "marketTotalAmount" -> lastIndexData.marketTotalAmount().toString();
+            default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
+        };
     }
 }
