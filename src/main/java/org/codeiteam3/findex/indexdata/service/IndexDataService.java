@@ -96,8 +96,10 @@ public class IndexDataService {
         }
 
         // 지수 데이터 존재 확인
-        indexInfoRepository.findById(indexInfoId)
-                .orElseThrow(() ->new NoSuchElementException(indexInfoId + "를 가진 IndexInfo를 찾을 수 없습니다."));
+        if (indexInfoId != null) {
+            indexInfoRepository.findById(indexInfoId)
+                    .orElseThrow(() ->new NoSuchElementException(indexInfoId + "를 가진 IndexInfo를 찾을 수 없습니다."));
+        }
 
         // cursor
         String normalizedCursor  = (cursor == null || cursor.isBlank()) ? null : cursor;
