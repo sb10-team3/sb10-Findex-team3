@@ -124,8 +124,9 @@ public class IndexDataService {
         // 지수 데이터 조회
         Slice<IndexDataDto> indexDataSlice = findIndexDataSlice(indexInfoId, startDate, endDate, idAfter, normalizedCursor, normalizedSortField, normalizedDirection, pageable)
                 .map(indexData -> indexDataMapper.toDto(indexData));
+
         // 조회 데이터 중 마지막 요소
-        IndexDataDto lastIndexData = indexDataSlice.getContent().get(indexDataSlice.getNumberOfElements() - 1);
+        IndexDataDto lastIndexData = !indexDataSlice.getContent().isEmpty() ? indexDataSlice.getContent().get(indexDataSlice.getNumberOfElements() - 1) : null;
 
         String nextCursor = null; // sortField에 따라 달라짐
         UUID nextIdAfter = null;
