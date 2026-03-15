@@ -113,7 +113,7 @@ public class IndexDataService {
         // Pageable (cursor, sortField, 정렬, 갯수 적용)
         Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection, "id")));
 
-        // 조회 조건에 따라 조회된 전체 데이터 수
+        // 조회 조건에 따라 계산된 전체 데이터 수
         Long totalElements = indexDataRepository.countElements(indexInfoId, startDate, endDate);
 
         return null;
