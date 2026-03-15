@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.enums.PeriodType;
 import org.codeiteam3.findex.indexdata.dto.ChartDataPoint;
 import org.codeiteam3.findex.indexdata.dto.IndexChartDto;
+import org.codeiteam3.findex.indexdata.dto.IndexPerformanceDto;
+import org.codeiteam3.findex.indexdata.dto.RankedIndexPerformanceDto;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.mapper.ChartDataMapper;
 import org.codeiteam3.findex.indexdata.mapper.IndexChartMapper;
+import org.codeiteam3.findex.indexdata.mapper.IndexPerformanceMapper;
+import org.codeiteam3.findex.indexdata.mapper.RankedIndexPerformanceMapper;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
@@ -15,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,8 @@ public class IndexDashBoardService {
     private final IndexChartMapper indexChartMapper;
     private final ChartDataMapper chartDataMapper;
     private final IndexInfoRepository indexInfoRepository;
+    private final IndexPerformanceMapper indexPerformanceMapper;
+    private final RankedIndexPerformanceMapper rankedIndexPerformanceMapper;
 
     @Transactional(readOnly = true)
     public IndexChartDto find(UUID indexInfoId, PeriodType periodType){
@@ -78,5 +86,89 @@ public class IndexDashBoardService {
         }
 
         return indexChartMapper.toDto(indexInfo, periodType, priceList, avg5List, avg20List);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RankedIndexPerformanceDto> findIndexPerformanceRank(UUID indexInfoId, PeriodType periodType, Integer limit){
+        LocalDate today = LocalDate.now();
+        LocalDate past = calculatePastDate(today, periodType);
+
+        List<IndexData> todayIndexDatas;
+        List<IndexData> pastIndexDatas;
+
+        // 특정 지수만 조회
+        if(indexInfoId != null){
+            todayIndexDatas = indexDataRepository.findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(indexInfoId,today);
+            pastIndexDatas = indexDataRepository.findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(indexInfoId, past);
+        // 전체 지수 조회
+        } else{
+            todayIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(today);
+            pastIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(past);
+        }
+
+        // 빠르게 데이터를 꺼내기 위해 map활용
+        Map<UUID, IndexData> pastDataMap = pastIndexDatas.stream()
+                .collect(Collectors.toMap(data -> data.getIndexInfo().getId(), data -> data));
+
+        // indexPerformanceDto로 변환
+        List<IndexPerformanceDto> performanceDtos = todayIndexDatas.stream()
+                .map(todayData -> {
+                    IndexData pastData = pastDataMap.get(todayData.getIndexInfo().getId());
+
+                    BigDecimal currentPrice = todayData.getClosingPrice();
+                    BigDecimal beforePrice = BigDecimal.ZERO;
+                    BigDecimal fluctuationRate = BigDecimal.ZERO;
+                    BigDecimal versus = BigDecimal.ZERO;
+
+                    // 일간 기준이면 todayData의 값을 사용한다(indexData에 전일 데이터가 있음)
+                    if(periodType == PeriodType.DAILY){
+                        fluctuationRate = (todayData.getFluctuationRate() != null)
+                                ? todayData.getFluctuationRate() : BigDecimal.ZERO;
+                        versus = (todayData.getVersus() != null)
+                                ? todayData.getVersus() : BigDecimal.ZERO;
+                        beforePrice = currentPrice.subtract(currentPrice);
+                    } else{
+                        if(pastData != null && pastData.getClosingPrice() != null){
+                            beforePrice = pastData.getClosingPrice();
+                            if(beforePrice.compareTo(BigDecimal.ZERO) != 0){
+                                // 대비
+                                versus = currentPrice.subtract(beforePrice);
+                                // 등략률
+                                fluctuationRate = versus.divide(beforePrice, 2, RoundingMode.HALF_UP)
+                                        .multiply(new BigDecimal("100"));
+                            }
+                        }
+                    }
+
+                    return indexPerformanceMapper.toDto(todayData, versus, fluctuationRate, currentPrice, beforePrice);
+                })
+                // 등락율 기준으로 내림차순 정렬
+                .sorted((a, b) -> {
+                    // NullPointerException 방어 (안전한 정렬을 위해 null을 0으로 취급)
+                    BigDecimal rateA = a.getFluctuationRate() != null ? a.getFluctuationRate() : BigDecimal.ZERO;
+                    BigDecimal rateB = b.getFluctuationRate() != null ? b.getFluctuationRate() : BigDecimal.ZERO;
+                    return rateB.compareTo(rateA);
+                })
+                // 특정 지수면 최신것만 아니라면 limit까지 보여줌
+                .limit((indexInfoId != null) ? limit : 1)
+                .toList();
+
+        // RankedPerformanceDto로 반환
+        List<RankedIndexPerformanceDto> rankedList = new ArrayList<>();
+        for(int i = 0; i < performanceDtos.size(); i++){
+            rankedList.add(rankedIndexPerformanceMapper.toDto(performanceDtos.get(i), i + 1));
+        }
+
+        return rankedList;
+    }
+
+    // PeriodType에 따른 대비 기간
+    private LocalDate calculatePastDate(LocalDate today, PeriodType periodType){
+        return switch(periodType){
+            case DAILY -> today.minusDays(1);
+            case WEEKLY -> today.minusWeeks(1);
+            case MONTHLY -> today.minusMonths(1);
+            default -> throw new IllegalArgumentException("지원하지 않는 기간 유형입니다: " + periodType);
+        };
     }
 }
