@@ -134,6 +134,9 @@ public class IndexDataService {
             case "baseDate" -> normalizedDirection.isDescending()
                     ? indexDataRepository.findAllByBaseDateCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable)
                     : indexDataRepository.findAllByBaseDateCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable);
+            case "marketPrice", "closingPrice", "highPrice", "lowPrice", "versus", "fluctuationRate" -> normalizedDirection.isDescending()
+                    ? indexDataRepository.findAllByBigDecimalCursorDesc(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedSortField, pageable)
+                    : indexDataRepository.findAllByBigDecimalCursorAsc(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedSortField, pageable);
             case "tradingQuantity", "tradingPrice", "marketTotalAmount" -> normalizedDirection.isDescending()
                     ? indexDataRepository.findAllByLongCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable)
                     : indexDataRepository.findAllByLongCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable);
