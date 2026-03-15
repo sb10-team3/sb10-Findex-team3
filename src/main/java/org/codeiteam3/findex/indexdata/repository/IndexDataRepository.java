@@ -88,7 +88,7 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("idAfter") UUID isAfter,
+            @Param("idAfter") UUID idAfter,
             @Param("cursor") BigDecimal normalizedCursor,
             @Param("sortField") String normalizedSortField,
             Pageable pageable
@@ -118,7 +118,7 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("idAfter") UUID isAfter,
+            @Param("idAfter") UUID idAfter,
             @Param("cursor") BigDecimal normalizedCursor,
             @Param("sortField") String normalizedSortField,
             Pageable pageable
@@ -139,12 +139,12 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             "           WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
             "           WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
             "           WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
-            "       END = :cursor AND i.id < :isAfter))")
+            "       END = :cursor AND i.id < :idAfter))")
     Slice<IndexData> findAllByLongCursorDesc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("isAfter") UUID isAfter,
+            @Param("idAfter") UUID idAfter,
             @Param("cursor") Long normalizedCursor,
             @Param("sortField") String normalizedSortField,
             Pageable pageable
@@ -163,12 +163,12 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             "           WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
             "           WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
             "           WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
-            "       END = :cursor AND i.id > :isAfter))")
+            "       END = :cursor AND i.id > :idAfter))")
     Slice<IndexData> findAllByLongCursorAsc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("isAfter") UUID isAfter,
+            @Param("idAfter") UUID idAfter,
             @Param("cursor") Long normalizedCursor,
             @Param("sortField") String normalizedSortField,
             Pageable pageable
