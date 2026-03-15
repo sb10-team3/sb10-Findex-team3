@@ -171,14 +171,17 @@ public class IndexDataService {
     // String(문자열) -> 다른 타입으로 parse
     // String -> LocalDate
     private LocalDate parseLocalDateCursor(String cursor) {
+        if (cursor == null) return null;
         return LocalDate.parse(cursor);
     }
     // String -> BigDecimal
     private BigDecimal parseBigDecimalCursor(String cursor) {
+        if (cursor == null) return null;
         return new BigDecimal(cursor);
     }
     // String -> Long
     private Long parseLongCursor(String cursor) {
+        if (cursor == null) return null;
         return Long.parseLong(cursor);
     }
 
