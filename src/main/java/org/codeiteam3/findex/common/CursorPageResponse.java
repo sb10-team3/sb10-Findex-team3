@@ -14,7 +14,7 @@ public record CursorPageResponse<T>(
         @Schema(description = "다음 페이지 커서", example = "eyJpZCI6MjB9")
         String nextCursor,
 
-        @Schema(description = "다음 페이지 커서", example = "eyJpZCI6MjB9")
+        @Schema(description = "마지막 요소의 ID", example = "eyJpZCI6MjB9")
         UUID nextIdAfter,
 
         @Schema(description = "페이지 크기", example = "10")
