@@ -137,7 +137,7 @@ public class IndexDataService {
             case "tradingQuantity", "tradingPrice", "marketTotalAmount" -> normalizedDirection.isDescending()
                     ? indexDataRepository.findAllByLongCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable)
                     : indexDataRepository.findAllByLongCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable);
-            default -> throw new IllegalArgumentException("제대로 되지 않음 sortField 입니다.");
+            default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
         };
     }
 
