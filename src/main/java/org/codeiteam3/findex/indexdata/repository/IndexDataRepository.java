@@ -17,15 +17,15 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
     @Query("SELECT COUNT(i) FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate)")
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)")
     Long countElements(@Param("indexInfoId") UUID indexInfoId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // 정렬 기준이 LocalDate일 때
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
             "   AND (:cursor IS NULL OR i.baseDate < :cursor OR (i.baseDate = :cursor AND i.id < :idAfter))")
     Slice<IndexData> findAllByBaseDateCursorDesc(
             @Param("indexInfoId") UUID indexInfoId,
@@ -37,8 +37,8 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     );
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
             "   AND (:cursor IS NULL OR i.baseDate > :cursor OR (i.baseDate = :cursor AND i.id > :idAfter))")
     Slice<IndexData> findAllByBaseDateCursorAsc(
             @Param("indexInfoId") UUID indexInfoId,
@@ -52,58 +52,60 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     // 정렬 기준이 BigDecimal일 때
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
-            "   OR CASE " +
-            "       WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
-            "       WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
-            "       WHEN :sortField = 'highPrice' THEN i.highPrice " +
-            "       WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
-            "       WHEN :sortField = 'versus' THEN i.versus " +
-            "       WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
-            "   END < :cursor" +
-            "   OR (CASE " +
-            "       WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
-            "       WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
-            "       WHEN :sortField = 'highPrice' THEN i.highPrice " +
-            "       WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
-            "       WHEN :sortField = 'versus' THEN i.versus " +
-            "       WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
-            "   END = :cursor AND i.id > :idAfter)")
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
+            "   AND (:cursor IS NULL " +
+            "       OR CASE " +
+            "          WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
+            "          WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
+            "          WHEN :sortField = 'highPrice' THEN i.highPrice " +
+            "          WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
+            "          WHEN :sortField = 'versus' THEN i.versus " +
+            "          WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
+            "       END < :cursor" +
+            "       OR (CASE " +
+            "          WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
+            "          WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
+            "          WHEN :sortField = 'highPrice' THEN i.highPrice " +
+            "          WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
+            "          WHEN :sortField = 'versus' THEN i.versus " +
+            "          WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
+            "      END = :cursor AND i.id < :idAfter))")
     Slice<IndexData> findAllByBigDecimalCursorDesc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("isAfter") UUID isAfter,
+            @Param("idAfter") UUID isAfter,
             @Param("cursor") BigDecimal normalizedCursor,
             @Param("sortField") String normalizedSortField,
             Pageable pageable
     );
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
-            "   OR CASE " +
-            "       WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
-            "       WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
-            "       WHEN :sortField = 'highPrice' THEN i.highPrice " +
-            "       WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
-            "       WHEN :sortField = 'versus' THEN i.versus " +
-            "       WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
-            "   END > :cursor" +
-            "   OR (CASE " +
-            "       WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
-            "       WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
-            "       WHEN :sortField = 'highPrice' THEN i.highPrice " +
-            "       WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
-            "       WHEN :sortField = 'versus' THEN i.versus " +
-            "       WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
-            "   END = :cursor AND i.id < :idAfter)")
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
+            "   AND (:cursor IS NULL " +
+            "       OR CASE " +
+            "           WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
+            "           WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
+            "           WHEN :sortField = 'highPrice' THEN i.highPrice " +
+            "           WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
+            "           WHEN :sortField = 'versus' THEN i.versus " +
+            "           WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
+            "       END > :cursor" +
+            "       OR (CASE " +
+            "           WHEN :sortField = 'marketPrice' THEN i.marketPrice " +
+            "           WHEN :sortField = 'closingPrice' THEN i.closingPrice " +
+            "           WHEN :sortField = 'highPrice' THEN i.highPrice " +
+            "           WHEN :sortField = 'lowPrice' THEN i.lowPrice " +
+            "           WHEN :sortField = 'versus' THEN i.versus " +
+            "           WHEN :sortField = 'fluctuationRate' THEN i.fluctuationRate " +
+            "       END = :cursor AND i.id > :idAfter))")
     Slice<IndexData> findAllByBigDecimalCursorAsc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("isAfter") UUID isAfter,
+            @Param("idAfter") UUID isAfter,
             @Param("cursor") BigDecimal normalizedCursor,
             @Param("sortField") String normalizedSortField,
             Pageable pageable
@@ -112,19 +114,19 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     // 정렬 기준이 Long일 때
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
             "   AND (:cursor IS NULL " +
-            "OR CASE " +
-            "   WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
-            "   WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
-            "   WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
-            "END < :cursor " +
-            "   OR (CASE " +
-            "       WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
-            "       WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
-            "       WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
-            "   END = :cursor AND i.id < :isAfter))")
+            "       OR CASE " +
+            "           WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "           WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "           WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "       END < :cursor " +
+            "       OR (CASE " +
+            "           WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "           WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "           WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "       END = :cursor AND i.id < :isAfter))")
     Slice<IndexData> findAllByLongCursorDesc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
@@ -136,19 +138,19 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     );
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
-            "   AND (:startDate IS NULL OR i.baseDate >= :startDate) " +
-            "   AND (:endDate IS NULL OR i.baseDate <= :endDate) " +
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
             "   AND (:cursor IS NULL " +
-            "OR CASE " +
-            "   WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
-            "   WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
-            "   WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
-            "END > :cursor " +
-            "   OR (CASE " +
-            "       WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
-            "       WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
-            "       WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
-            "   END = :cursor AND i.id > :isAfter))")
+            "       OR CASE " +
+            "           WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "           WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "           WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "       END > :cursor " +
+            "       OR (CASE " +
+            "           WHEN :sortField = 'tradingQuantity' THEN i.tradingQuantity " +
+            "           WHEN :sortField = 'tradingPrice' THEN i.tradingPrice " +
+            "           WHEN :sortField = 'marketTotalAmount' THEN i.marketTotalAmount " +
+            "       END = :cursor AND i.id > :isAfter))")
     Slice<IndexData> findAllByLongCursorAsc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
