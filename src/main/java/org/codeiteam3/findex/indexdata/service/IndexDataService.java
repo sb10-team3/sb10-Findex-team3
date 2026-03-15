@@ -86,6 +86,7 @@ public class IndexDataService {
     }
 
     // 지수 데이터 조회
+    @Transactional(readOnly = true)
     public CursorPageResponseIndexDataDto findAll(UUID indexInfoId, LocalDate startDate, LocalDate endDate, UUID idAfter, String cursor, String sortField, String sortDirection, int size) {
         // validate
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
