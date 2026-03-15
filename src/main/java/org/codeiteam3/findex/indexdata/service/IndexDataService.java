@@ -140,7 +140,14 @@ public class IndexDataService {
                 totalElements
         );
 
-        return new CursorPageResponseIndexDataDto(cursorPageResponse);
+        return new CursorPageResponseIndexDataDto(
+                cursorPageResponse.content(),
+                cursorPageResponse.nextCursor(),
+                cursorPageResponse.nextIdAfter(),
+                cursorPageResponse.size(),
+                totalElements,
+                cursorPageResponse.hasNext()
+        );
     }
 
     private Slice<IndexData> findIndexDataSlice(
