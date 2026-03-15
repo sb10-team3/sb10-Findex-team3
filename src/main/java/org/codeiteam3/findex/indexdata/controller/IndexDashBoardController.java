@@ -9,6 +9,7 @@ import org.codeiteam3.findex.indexdata.service.IndexDashBoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,16 +21,19 @@ public class IndexDashBoardController {
 
     @GetMapping(value = "/{id}/chart")
     public ResponseEntity<IndexChartDto> findIndexChart(@PathVariable("id") UUID indexInfoId,
-                                         @RequestParam(required = false) PeriodType periodType){
+                                         @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType){
         IndexChartDto response = indexDashBoardService.find(indexInfoId, periodType);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/perfomance/rank")
-    public ResponseEntity<RankedIndexPerformanceDto> findIndexPeformanceRank(
+    public ResponseEntity<List<RankedIndexPerformanceDto>> findIndexPerformanceRank(
             @RequestParam(required = false) UUID indexInfoId,
-            @RequestParam(required = false) PeriodType periodType,
+            @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType,
             @RequestParam(required = false, defaultValue = "10") Integer limit){
+        List<RankedIndexPerformanceDto> response =
+                indexDashBoardService.findIndexPerformanceRank(indexInfoId, periodType, limit);
 
+        return ResponseEntity.ok(response);
     }
 }
