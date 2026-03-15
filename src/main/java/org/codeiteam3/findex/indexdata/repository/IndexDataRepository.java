@@ -15,6 +15,12 @@ import java.util.UUID;
 public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     boolean existsByIndexInfoIdAndBaseDate(UUID indexInfoId, LocalDate baseDate);
 
+    boolean existsByIndexInfo_IndexNameAndIndexInfo_IndexClassificationAndBaseDate(
+            String indexName,
+            String indexClassification,
+            LocalDate baseDate
+    );
+
     @Query("SELECT COUNT(i) FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
             "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
