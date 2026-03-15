@@ -155,9 +155,14 @@ public class IndexDataService {
     ) {
         // switch 문으로 sortField의 타입에 따라 다른 repo 메서드 사용
         return switch (normalizedSortField) {
-            case "baseDate" -> normalizedDirection.isDescending()
-                    ? indexDataRepository.findAllByBaseDateCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable)
-                    : indexDataRepository.findAllByBaseDateCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), pageable);
+            case "baseDate" -> {
+                LocalDate localDateCursor = parseLocalDateCursor(normalizedCursor);
+                yield localDateCursor == null
+                        ? indexDataRepository.findAllByBaseDateFirstPage(indexInfoId, startDate, endDate, pageable)
+                        : normalizedDirection.isDescending()
+                            ? indexDataRepository.findAllByBaseDateNextPageDesc(indexInfoId, startDate, endDate, idAfter, localDateCursor, pageable)
+                            : indexDataRepository.findAllByBaseDateNextPageAsc(indexInfoId, startDate, endDate, idAfter, localDateCursor, pageable);
+            }
             case "marketPrice", "closingPrice", "highPrice", "lowPrice", "versus", "fluctuationRate" -> normalizedDirection.isDescending()
                     ? indexDataRepository.findAllByBigDecimalCursorDesc(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedSortField, pageable)
                     : indexDataRepository.findAllByBigDecimalCursorAsc(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedSortField, pageable);

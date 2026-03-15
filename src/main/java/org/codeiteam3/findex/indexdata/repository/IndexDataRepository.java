@@ -22,12 +22,25 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     Long countElements(@Param("indexInfoId") UUID indexInfoId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // 정렬 기준이 LocalDate일 때
+    // cursor == null (첫 페이지)
+    @Query("SELECT i FROM IndexData AS i " +
+            "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
+            "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
+            "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)")
+    Slice<IndexData> findAllByBaseDateFirstPage(
+            @Param("indexInfoId") UUID indexInfoId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
+
+    // cursor != null (다음 페이지)
     @Query("SELECT i FROM IndexData AS i " +
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
             "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
             "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
-            "   AND (:cursor IS NULL OR i.baseDate < :cursor OR (i.baseDate = :cursor AND i.id < :idAfter))")
-    Slice<IndexData> findAllByBaseDateCursorDesc(
+            "   AND (i.baseDate < :cursor OR (i.baseDate = :cursor AND i.id < :idAfter))")
+    Slice<IndexData> findAllByBaseDateNextPageDesc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
@@ -39,8 +52,8 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             "WHERE (:indexInfoId IS NULL OR i.indexInfo.id = :indexInfoId) " +
             "   AND i.baseDate >= COALESCE(:startDate, i.baseDate) " +
             "   AND i.baseDate <= COALESCE(:endDate, i.baseDate)" +
-            "   AND (:cursor IS NULL OR i.baseDate > :cursor OR (i.baseDate = :cursor AND i.id > :idAfter))")
-    Slice<IndexData> findAllByBaseDateCursorAsc(
+            "   AND (i.baseDate > :cursor OR (i.baseDate = :cursor AND i.id > :idAfter))")
+    Slice<IndexData> findAllByBaseDateNextPageAsc(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
