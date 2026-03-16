@@ -81,6 +81,9 @@ public class IndexInfoService {
         //.and로 정렬조건 추가 SortField로 정렬이 안될경우를 대비해서 id로 정렬조건 추가
         Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection,"id")));
 
+        //조회된 전체 데이터 수
+        Long totalElements = indexInfoRepository.countElements(indexClassification,indexName,favorite);
+
         return null;
 
     }
