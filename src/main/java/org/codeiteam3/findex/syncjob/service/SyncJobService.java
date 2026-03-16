@@ -236,7 +236,7 @@ public class SyncJobService {
     private SyncJob indexDataSync(IndexApiResponseItemDto item, IndexInfo indexInfo, String worker){
         try{
             //이미 있으면 갱신 안함
-            if(indexDataRepository.existsByIndexInfo_IndexNameAndIndexInfo_IndexClassificationAndBaseDate(
+            if(indexDataRepository.existsByIndexInfoIndexNameAndIndexInfoIndexClassificationAndBaseDate(
                     indexInfo.getIndexName(),
                     indexInfo.getIndexClassification(),
                     LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")))
