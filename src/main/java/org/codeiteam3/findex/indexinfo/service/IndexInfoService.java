@@ -7,11 +7,15 @@ import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -53,6 +57,32 @@ public class IndexInfoService {
         autoSyncConfigRepository.save(config);
 
         return saved;
+    }
+    public CursorPageResponseIndexInfoDto findAll(String indexClassification,String indexName,Boolean favorite,Integer idAfter,String cursor,String sortField,String sortDirection,Integer size){
+
+        // cursor
+        String normalizedCursor  = (cursor == null || cursor.isBlank()) ? null : cursor;
+
+        //sortField
+        Set<String> allowField = Set.of("indexClassification","indexName","employedItemsCount");
+        if(!allowField.contains(sortField)){
+            throw new IllegalArgumentException("적합하지 않은 정렬필드(sortField)입니다.");
+        }
+        String normalizedSortField = sortField;
+
+        //정렬방향
+        //Sort.Direction: Spring Data에서 사용하는 정렬 방향 enum
+        //Sort.Direction.ASC
+        //SORT.Direction.DESC
+        //SortDirection이 asc이면 ASC 아니면 DESC
+        Sort.Direction normalizedDirection = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        //Pageable(cursor, sortField, 정렬, 갯수 적용)
+        //.and로 정렬조건 추가 SortField로 정렬이 안될경우를 대비해서 id로 정렬조건 추가
+        Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection,"id")));
+
+        return null;
+
     }
 
     @Transactional(readOnly = true)
