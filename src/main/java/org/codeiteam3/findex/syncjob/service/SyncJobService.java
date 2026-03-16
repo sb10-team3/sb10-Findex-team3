@@ -19,6 +19,7 @@ import org.codeiteam3.findex.syncjob.dto.SyncJobDto;
 import org.codeiteam3.findex.syncjob.exception.ExternalApiException;
 import org.codeiteam3.findex.syncjob.mapper.SyncJobMapper;
 import org.codeiteam3.findex.syncjob.repository.SyncJobRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -43,8 +44,10 @@ public class SyncJobService {
     private final SyncJobMapper syncJobMapper;
     private final AutoSyncConfigRepository autoSyncConfigRepository;
 
-    private final String API_KEY = "5c1a32de77483aa31eb13746d9abd7b75b08d47e2d2256a38cda7a8c18f39d91";
+//    private final String API_KEY = "5c1a32de77483aa31eb13746d9abd7b75b08d47e2d2256a38cda7a8c18f39d91";
 
+    @Value("${findex.api.key}")
+    private String API_KEY;
     //지수 정보
     public List<SyncJobDto> indexInfoSyncJob(String worker) {
         List<SyncJobDto> dtoList = new ArrayList<>();
@@ -234,11 +237,22 @@ public class SyncJobService {
                     break;
                 }
 
+                items = items.stream()
+                        .filter(item -> item.idxCsf().equals(indexInfo.getIndexClassification()))
+                        .toList();
+
                 for(IndexApiResponseItemDto item : items){
                     SyncJob syncJob = indexDataSync(item, indexInfo, worker);
                     syncJobRepository.save(syncJob);
                     dtoList.add(syncJobMapper.toDto(syncJob));
                 }
+
+                int totalCount = indexApiResponse.response().body().totalCount();
+
+                if(pageNo * numOfRows >= totalCount){
+                    break;
+                }
+
                 pageNo++;
 
             }
