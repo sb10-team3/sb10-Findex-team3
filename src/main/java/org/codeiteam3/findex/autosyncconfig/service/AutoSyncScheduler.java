@@ -29,11 +29,11 @@ public class AutoSyncScheduler {
 
         for(UUID id : synclist){
             LocalDate baseDateFrom = syncJobRepository.findLastJobTime(id,"system")
-                    .orElse(LocalDate.now().minusDays(5));
+                    .orElse(LocalDate.now().minusDays(1));
             IndexDataSyncRequestDto dto = new IndexDataSyncRequestDto(
                     List.of(id),
                     baseDateFrom,
-                    LocalDate.now().minusDays(4)
+                    LocalDate.now()
             );
             syncJobService.indexDataSyncJob("system", dto);
         }
