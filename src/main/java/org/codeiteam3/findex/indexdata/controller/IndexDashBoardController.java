@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.enums.PeriodType;
 import org.codeiteam3.findex.indexdata.dto.IndexChartDto;
+import org.codeiteam3.findex.indexdata.dto.IndexPerformanceDto;
 import org.codeiteam3.findex.indexdata.dto.RankedIndexPerformanceDto;
 import org.codeiteam3.findex.indexdata.service.IndexDashBoardService;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,14 @@ public class IndexDashBoardController {
         List<RankedIndexPerformanceDto> response =
                 indexDashBoardService.findIndexPerformanceRank(indexInfoId, periodType, limit);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/performance/favorite")
+    public ResponseEntity<List<IndexPerformanceDto>> findFavoirteIndexPerformance(
+            @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType){
+        List<IndexPerformanceDto> response =
+                indexDashBoardService.findFavoriteIndexPerformance(periodType);
         return ResponseEntity.ok(response);
     }
 }
