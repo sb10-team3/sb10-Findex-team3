@@ -18,7 +18,7 @@ public class AutoSyncConfigService {
     private final AutoSyncConfigMapper autoSyncConfigMapper;
 
     public AutoSyncConfigResponseDto update(UUID id, AutoSyncConfigUpdateRequestDto dto) {
-        AutoSyncConfig config = autoSyncConfigRepository.findById(id)
+        AutoSyncConfig config = autoSyncConfigRepository.findByIdWithIndexInfo(id)
                 .orElseThrow(NoSuchElementException::new);
 
         config.update(dto.enabled());
