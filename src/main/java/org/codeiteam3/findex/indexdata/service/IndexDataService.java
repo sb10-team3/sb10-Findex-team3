@@ -153,8 +153,7 @@ public class IndexDataService {
     // 지수 데이터 수정
     public IndexDataDto update(UUID id, IndexDataUpdateRequest request) {
         // 지수 데이터 존재 확인
-        IndexData indexData = indexDataRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException(id + "를 가진 IndexData를 찾을 수 없습니다."));
+        IndexData indexData = validateAndGetIndexData(id);
 
         BigDecimal newMarketPrice = changedBigDecimal(request.marketPrice(), indexData.getMarketPrice());
         BigDecimal newClosingPrice = changedBigDecimal(request.closingPrice(), indexData.getClosingPrice());
@@ -192,6 +191,11 @@ public class IndexDataService {
         );
 
         return indexDataMapper.toDto(indexData);
+    }
+
+    private IndexData validateAndGetIndexData(UUID id) {
+        return indexDataRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException(id + "를 가진 IndexData를 찾을 수 없습니다."));
     }
 
     private Slice<IndexData> findIndexDataSlice(
