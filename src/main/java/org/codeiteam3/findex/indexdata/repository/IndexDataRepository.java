@@ -209,5 +209,5 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             "     SELECT MAX(sub.baseDate) FROM IndexData sub " +
             "     WHERE sub.indexInfo = d.indexInfo AND sub.baseDate <= :targetDate" +
             ")")
-    List<IndexData> findFavoriteDataOnorBefore(@Param("targetDate") LocalDate targetDate);
+    List<IndexData> findFavoriteDataOnOrBefore(@Param("targetDate") LocalDate targetDate);
 }

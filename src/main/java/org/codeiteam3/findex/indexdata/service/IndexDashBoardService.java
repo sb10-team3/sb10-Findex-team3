@@ -138,8 +138,8 @@ public class IndexDashBoardService {
         List<IndexData> todayIndexDatas;
         List<IndexData> pastIndexDatas;
 
-        todayIndexDatas = indexDataRepository.findFavoriteDataOnorBefore(today);
-        pastIndexDatas = indexDataRepository.findFavoriteDataOnorBefore(past);
+        todayIndexDatas = indexDataRepository.findFavoriteDataOnOrBefore(today);
+        pastIndexDatas = indexDataRepository.findFavoriteDataOnOrBefore(past);
 
         return calculateBasePerformance(todayIndexDatas, pastIndexDatas, periodType);
 
