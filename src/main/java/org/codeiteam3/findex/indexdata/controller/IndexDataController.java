@@ -13,6 +13,7 @@ import org.codeiteam3.findex.exception.ErrorResponse;
 import org.codeiteam3.findex.indexdata.dto.CursorPageResponseIndexDataDto;
 import org.codeiteam3.findex.indexdata.dto.IndexDataCreateRequest;
 import org.codeiteam3.findex.indexdata.dto.IndexDataDto;
+import org.codeiteam3.findex.indexdata.dto.IndexDataUpdateRequest;
 import org.codeiteam3.findex.indexdata.service.IndexDataService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +39,9 @@ public class IndexDataController {
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<IndexDataDto> create(@Valid @RequestBody IndexDataCreateRequest request) {
-        IndexDataDto indexDataDto = indexDataService.create(request);
+        IndexDataDto responseDto = indexDataService.create(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(indexDataDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping
