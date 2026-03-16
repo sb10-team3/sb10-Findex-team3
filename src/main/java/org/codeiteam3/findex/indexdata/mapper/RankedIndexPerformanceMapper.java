@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface RankedIndexPerformanceMapper {
-    RankedIndexPerformanceDto toDto(IndexPerformanceDto indexPerformanceDto, Integer rank);
+    RankedIndexPerformanceDto toDto(IndexPerformanceDto performance, Integer rank);
 }
