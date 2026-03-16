@@ -68,6 +68,10 @@ public class IndexInfoService {
     }
     public CursorPageResponseIndexInfoDto findAll(String indexClassification,String indexName,Boolean favorite,UUID idAfter,String cursor,String sortField,String sortDirection, int size){
 
+        if (size < 1) {
+            throw new IllegalArgumentException(" 페이지 크기(size)는 1 이상이어야 합니다.");
+        }
+
         // cursor
         String normalizedCursor  = (cursor == null || cursor.isBlank()) ? null : cursor;
 
