@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     boolean existsByIndexInfoIdAndBaseDate(UUID indexInfoId, LocalDate baseDate);
 
-    boolean existsByIndexInfo_IndexNameAndIndexInfo_IndexClassificationAndBaseDate(
+    boolean existsByIndexInfoIndexNameAndIndexInfoIndexClassificationAndBaseDate(
             String indexName,
             String indexClassification,
             LocalDate baseDate
