@@ -25,6 +25,7 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
     // 특정 지수 조회 시
     // 특정 지수를 기준일로 이하로 내림차순으로 정렬했을때 가장 최신의 지수 데이터를 조회
     List<IndexData> findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(UUID indexInfoId, LocalDate baseDateIsLessThan);
+
     // 전체 지수 조회 시
     // 각 지수별로 타겟 날짜 이전의 가장 최신 날짜를 찾은 뒤, 원본 테이블과 조인해서 데이터를 가져옴
     @Query(value =
