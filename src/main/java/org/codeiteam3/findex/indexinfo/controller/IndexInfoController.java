@@ -38,7 +38,7 @@ public class IndexInfoController {
     public ResponseEntity<CursorPageResponseIndexInfoDto> findAll(@Parameter(description = "지수 분류명") @RequestParam String indexClassification,
                                                                   @Parameter(description = "지수명") @RequestParam String indexName,
                                                                   @Parameter(description = "즐겨찾기 여부") @RequestParam Boolean favorite,
-                                                                  @Parameter(description = "이전 페이지 마지막 요소 ID") @RequestParam Integer idAfter,
+                                                                  @Parameter(description = "이전 페이지 마지막 요소 ID") @RequestParam UUID idAfter,
                                                                   @Parameter(description = "커서 (다음 페이지 시작점)") @RequestParam String cursor,
                                                                   @Parameter(description = "정렬필드(indexClassification,indexName,employedItemsCount)") @RequestParam String sortField,
                                                                   @Parameter(description = "정렬방향(asc,desc)") @RequestParam String sortDirection,
