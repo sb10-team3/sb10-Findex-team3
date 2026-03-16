@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.sync_job.service;
+package org.codeiteam3.findex.syncjob.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -7,14 +7,14 @@ import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.codeiteam3.findex.enums.JobType;
-import org.codeiteam3.findex.sync_job.dto.IndexDataSyncRequestDto;
-import org.codeiteam3.findex.sync_job.entity.SyncJob;
-import org.codeiteam3.findex.sync_job.dto.IndexApiResponseDto;
-import org.codeiteam3.findex.sync_job.dto.IndexApiResponseItemDto;
-import org.codeiteam3.findex.sync_job.dto.SyncJobDto;
-import org.codeiteam3.findex.sync_job.exception.ExternalApiException;
-import org.codeiteam3.findex.sync_job.mapper.SyncJobMapper;
-import org.codeiteam3.findex.sync_job.repository.SyncJobRepository;
+import org.codeiteam3.findex.syncjob.dto.IndexDataSyncRequestDto;
+import org.codeiteam3.findex.syncjob.entity.SyncJob;
+import org.codeiteam3.findex.syncjob.dto.IndexApiResponseDto;
+import org.codeiteam3.findex.syncjob.dto.IndexApiResponseItemDto;
+import org.codeiteam3.findex.syncjob.dto.SyncJobDto;
+import org.codeiteam3.findex.syncjob.exception.ExternalApiException;
+import org.codeiteam3.findex.syncjob.mapper.SyncJobMapper;
+import org.codeiteam3.findex.syncjob.repository.SyncJobRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

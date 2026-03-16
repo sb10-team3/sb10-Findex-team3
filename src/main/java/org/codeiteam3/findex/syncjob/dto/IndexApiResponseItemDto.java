@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.sync_job.dto;
+package org.codeiteam3.findex.syncjob.dto;
 
 public record IndexApiResponseItemDto(
         String basDt,            // 기준일자 info data
