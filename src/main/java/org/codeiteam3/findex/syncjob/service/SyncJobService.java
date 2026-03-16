@@ -51,17 +51,20 @@ public class SyncJobService {
 
         int pageNo = 1;
         int numOfRows = 100;
+        int minusday = 1;
+        boolean dateConfirmed = false;
 
         while(true){
             try{
                 int finalPageNo = pageNo;
+                int finalMinusday = minusday;
                 IndexApiResponseDto indexApiResponse = webClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .queryParam("serviceKey", API_KEY)
                                 .queryParam("resultType", "json")
                                 .queryParam("pageNo", finalPageNo)
                                 .queryParam("numOfRows", numOfRows)
-                                .queryParam("basDt", LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                                .queryParam("basDt", LocalDate.now().minusDays(finalMinusday).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                                 .build()
                         )
                         .retrieve()
@@ -87,20 +90,26 @@ public class SyncJobService {
                 List<IndexApiResponseItemDto> items = indexApiResponse.response().body().items().item();
 
                 if(items == null || items.isEmpty()){
-                    break;
+                    if(!dateConfirmed){
+                        minusday++;
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
                 }
+                dateConfirmed=true;
 
                 for(IndexApiResponseItemDto item : items){
                     SyncJob syncJob = indexInfoSync(item, worker);
                     syncJobRepository.save(syncJob);
                     dtoList.add(syncJobMapper.toDto(syncJob));
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 System.out.println("API 호출 실패: " + e.getMessage());
                 e.printStackTrace();
                 break; // 무한 루프 방지
             }
-
             pageNo++;
         }
 
