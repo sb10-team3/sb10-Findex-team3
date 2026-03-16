@@ -8,6 +8,7 @@ import org.codeiteam3.findex.common.CursorPageResponseMapper;
 import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexinfo.dto.data.CursorPageResponseIndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;
+import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoSummaryDto;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoUpdateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
@@ -22,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -202,6 +201,21 @@ public class IndexInfoService {
         return indexInfoRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " 지수 정보가 없습니다."));
 
     }
+
+    @Transactional(readOnly = true)
+    public List<IndexInfoSummaryDto> findSummaries(){
+
+        return indexInfoRepository.findAll().stream()
+                .map(indexInfo -> new IndexInfoSummaryDto(
+                        indexInfo.getId(),
+                        indexInfo.getIndexClassification(),
+                        indexInfo.getIndexName()
+                ))
+                .toList();
+
+
+    }
+
 
     public IndexInfo update(UUID id, IndexInfoUpdateRequest indexInfoUpdateRequest){
         Integer employedItemsCount =  indexInfoUpdateRequest.employedItemsCount();
