@@ -106,44 +106,10 @@ public class IndexDashBoardService {
             pastIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(past);
         }
 
-        // 빠르게 데이터를 꺼내기 위해 map활용
-        Map<UUID, IndexData> pastDataMap = pastIndexDatas.stream()
-                .collect(Collectors.toMap(data -> data.getIndexInfo().getId(), data -> data));
 
-        // indexPerformanceDto로 변환
-        List<IndexPerformanceDto> performanceDtos = todayIndexDatas.stream()
-                .map(todayData -> {
-                    IndexData pastData = pastDataMap.get(todayData.getIndexInfo().getId());
-
-                    BigDecimal currentPrice = todayData.getClosingPrice();
-                    BigDecimal beforePrice = BigDecimal.ZERO;
-                    BigDecimal fluctuationRate = BigDecimal.ZERO;
-                    BigDecimal versus = BigDecimal.ZERO;
-
-                    // 일간 기준이면 todayData의 값을 사용한다(indexData에 전일 데이터가 있음)
-                    if(periodType == PeriodType.DAILY){
-                        fluctuationRate = (todayData.getFluctuationRate() != null)
-                                ? todayData.getFluctuationRate() : BigDecimal.ZERO;
-                        versus = (todayData.getVersus() != null)
-                                ? todayData.getVersus() : BigDecimal.ZERO;
-                        beforePrice = currentPrice.subtract(versus);
-                    } else{
-                        if(pastData != null && pastData.getClosingPrice() != null){
-                            beforePrice = pastData.getClosingPrice();
-                            // 전 가격이 0아 아니라면
-                            if(beforePrice.compareTo(BigDecimal.ZERO) != 0){
-                                // 대비
-                                versus = currentPrice.subtract(beforePrice);
-                                // 등략률
-                                // 등락률 계산 = 현재가 - 과거가 / 과거가 * 100
-                                fluctuationRate = versus.divide(beforePrice, 2, RoundingMode.HALF_UP)
-                                        .multiply(new BigDecimal("100"));
-                            }
-                        }
-                    }
-
-                    return indexPerformanceMapper.toDto(todayData, versus, fluctuationRate, currentPrice, beforePrice);
-                })
+        // 지수 성과 Dto리스트 생성
+        List<IndexPerformanceDto> performanceDtos =
+                calculateBasePerformance(todayIndexDatas,pastIndexDatas,periodType).stream()
                 // 등락률 기준으로 내림차순 정렬
                 .sorted((a, b) -> {
                     // NullPointerException 방어 (안전한 정렬을 위해 null을 0으로 취급)
@@ -164,6 +130,21 @@ public class IndexDashBoardService {
         return rankedList;
     }
 
+    @Transactional(readOnly = true)
+    public List<IndexPerformanceDto> findFavoriteIndexPerformance(PeriodType periodType){
+        LocalDate today = LocalDate.now();
+        LocalDate past = calculatePastDate(today, periodType);
+
+        List<IndexData> todayIndexDatas;
+        List<IndexData> pastIndexDatas;
+
+        todayIndexDatas = indexDataRepository.findFavoriteDataOnOrBefore(today);
+        pastIndexDatas = indexDataRepository.findFavoriteDataOnOrBefore(past);
+
+        return calculateBasePerformance(todayIndexDatas, pastIndexDatas, periodType);
+
+    }
+
     // PeriodType에 따른 대비 기간
     private LocalDate calculatePastDate(LocalDate today, PeriodType periodType){
         return switch(periodType){
@@ -172,5 +153,48 @@ public class IndexDashBoardService {
             case MONTHLY -> today.minusMonths(1);
             default -> throw new IllegalArgumentException("지원하지 않는 기간 유형입니다: " + periodType);
         };
+    }
+
+    // 지수 성과 Dto리스트 생성
+    private List<IndexPerformanceDto> calculateBasePerformance(List<IndexData> todayIndexData,
+                                                               List<IndexData> pastIndexData,
+                                                               PeriodType periodType){
+        // 빠르게 데이터를 꺼내기 위해 map활용
+        Map<UUID, IndexData> pastDataMap = pastIndexData.stream()
+                .collect(Collectors.toMap(data -> data.getIndexInfo().getId(), data -> data));
+
+        // indexPerformanceDto로 변환
+        return todayIndexData.stream()
+                .map(todayData -> {
+                    IndexData pastData = pastDataMap.get(todayData.getIndexInfo().getId());
+
+                    BigDecimal currentPrice = todayData.getClosingPrice();
+                    BigDecimal beforePrice = BigDecimal.ZERO;
+                    BigDecimal fluctuationRate = BigDecimal.ZERO;
+                    BigDecimal versus = BigDecimal.ZERO;
+
+                    // 일간 기준이면 todayData의 값을 사용한다(indexData에 전일 데이터가 있음)
+                    if (periodType == PeriodType.DAILY) {
+                        fluctuationRate = (todayData.getFluctuationRate() != null)
+                                ? todayData.getFluctuationRate() : BigDecimal.ZERO;
+                        versus = (todayData.getVersus() != null)
+                                ? todayData.getVersus() : BigDecimal.ZERO;
+                        beforePrice = currentPrice.subtract(versus);
+                    } else {
+                        if (pastData != null && pastData.getClosingPrice() != null) {
+                            beforePrice = pastData.getClosingPrice();
+                            // 전 가격이 0아 아니라면
+                            if (beforePrice.compareTo(BigDecimal.ZERO) != 0) {
+                                // 대비
+                                versus = currentPrice.subtract(beforePrice);
+                                // 등략률
+                                // 등락률 계산 = 현재가 - 과거가 / 과거가 * 100
+                                fluctuationRate = versus.divide(beforePrice, 2, RoundingMode.HALF_UP)
+                                        .multiply(new BigDecimal("100"));
+                            }
+                        }
+                    }
+                    return indexPerformanceMapper.toDto(todayData, versus, fluctuationRate, currentPrice, beforePrice);
+                }).toList();
     }
 }

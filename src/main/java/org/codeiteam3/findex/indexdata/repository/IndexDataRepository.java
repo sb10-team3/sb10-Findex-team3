@@ -200,4 +200,14 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             "    WHERE sub.indexInfo = d.indexInfo AND sub.baseDate <= :targetDate" +
             ")")
     List<IndexData> findLatestDataOfAllIndexesOnOrBefore(@Param("targetDate") LocalDate targetDate);
+
+    // 즐겨찾기 되어있는 지수 조회
+    @Query("SELECT d FROM IndexData d " +
+            "JOIN FETCH d.indexInfo i " +
+            "WHERE i.favorite = true " +
+            "AND d.baseDate = ( " +
+            "     SELECT MAX(sub.baseDate) FROM IndexData sub " +
+            "     WHERE sub.indexInfo = d.indexInfo AND sub.baseDate <= :targetDate" +
+            ")")
+    List<IndexData> findFavoriteDataOnOrBefore(@Param("targetDate") LocalDate targetDate);
 }
