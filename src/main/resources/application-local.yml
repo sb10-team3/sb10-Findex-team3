@@ -18,3 +18,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+
+findex:
+  api:
+    key: "5c1a32de77483aa31eb13746d9abd7b75b08d47e2d2256a38cda7a8c18f39d91"
+    sync_cron: "0 1 15 * * *"
+
