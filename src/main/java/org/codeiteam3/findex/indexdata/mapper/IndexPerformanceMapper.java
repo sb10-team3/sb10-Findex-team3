@@ -9,9 +9,9 @@ import java.math.BigDecimal;
 
 @Mapper(componentModel = "spring")
 public interface IndexPerformanceMapper {
-    @Mapping(target = "indexInfoId", source = "indexInfo.id")
-    @Mapping(target = "indexClassification", source = "indexInfo.indexClassification")
-    @Mapping(target = "indexName", source = "indexInfo.indexName")
+    @Mapping(target = "indexInfoId", source = "indexData.indexInfo.id")
+    @Mapping(target = "indexClassification", source = "indexData.indexInfo.indexClassification")
+    @Mapping(target = "indexName", source = "indexData.indexInfo.indexName")
     IndexPerformanceDto toDto(IndexData indexData,
                               BigDecimal versus,
                               BigDecimal fluctuationRate,
