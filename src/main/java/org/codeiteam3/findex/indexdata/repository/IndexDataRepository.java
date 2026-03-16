@@ -3,6 +3,7 @@ package org.codeiteam3.findex.indexdata.repository;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -183,6 +184,20 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
 
 
-    // 대쉬보드 메서드
+
     List<IndexData> findByIndexInfoIdOrderByBaseDate(UUID indexInfoId);
+    // 특정 지수 조회 시
+    // 특정 지수를 기준일로 이하로 내림차순으로 정렬했을때 가장 최신의 지수 데이터를 조회
+    @EntityGraph(attributePaths = "indexInfo")
+    List<IndexData> findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(UUID indexInfoId, LocalDate baseDateIsLessThan);
+
+    // 전체 지수 조회 시
+    // 각 지수별로 타겟 날짜 이전의 가장 최신 날짜를 찾은 뒤, 원본 테이블과 조인해서 데이터를 가져옴
+    @Query("SELECT d FROM IndexData d " +
+            "JOIN FETCH d.indexInfo " +
+            "WHERE d.baseDate = (" +
+            "    SELECT MAX(sub.baseDate) FROM IndexData sub " +
+            "    WHERE sub.indexInfo = d.indexInfo AND sub.baseDate <= :targetDate" +
+            ")")
+    List<IndexData> findLatestDataOfAllIndexesOnOrBefore(@Param("targetDate") LocalDate targetDate);
 }
