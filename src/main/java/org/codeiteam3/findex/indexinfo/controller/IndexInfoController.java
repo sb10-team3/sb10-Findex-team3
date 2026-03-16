@@ -38,11 +38,11 @@ public class IndexInfoController {
     public ResponseEntity<CursorPageResponseIndexInfoDto> findAll(@Parameter(description = "지수 분류명") @RequestParam(required = false) String indexClassification,
                                                                   @Parameter(description = "지수명") @RequestParam(required = false) String indexName,
                                                                   @Parameter(description = "즐겨찾기 여부") @RequestParam(required = false) Boolean favorite,
-                                                                  @Parameter(description = "이전 페이지 마지막 요소 ID") @RequestParam UUID idAfter,
-                                                                  @Parameter(description = "커서 (다음 페이지 시작점)") @RequestParam String cursor,
-                                                                  @Parameter(description = "정렬필드(indexClassification,indexName,employedItemsCount)") @RequestParam String sortField,
-                                                                  @Parameter(description = "정렬방향(asc,desc)") @RequestParam String sortDirection,
-                                                                  @Parameter(description = "페이지 크기") @RequestParam Integer size
+                                                                  @Parameter(description = "이전 페이지 마지막 요소 ID") @RequestParam(required = false) UUID idAfter,
+                                                                  @Parameter(description = "커서 (다음 페이지 시작점)") @RequestParam(required = false) String cursor,
+                                                                  @Parameter(description = "정렬필드(indexClassification,indexName,employedItemsCount)") @RequestParam(required = false) String sortField,
+                                                                  @Parameter(description = "정렬방향(asc,desc)") @RequestParam(required = false) String sortDirection,
+                                                                  @Parameter(description = "페이지 크기") @RequestParam(required = false) Integer size
 
                                                                   ) {
         CursorPageResponseIndexInfoDto responseDto = indexInfoService.findAll(indexClassification,indexName,favorite,idAfter,cursor,sortField,sortDirection,size);
