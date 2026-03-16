@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface AutoSyncConfigRepository extends JpaRepository<AutoSyncConfig,UUID> {
+    AutoSyncConfig findByIndexInfoId(UUID indexInfoId);
 }
