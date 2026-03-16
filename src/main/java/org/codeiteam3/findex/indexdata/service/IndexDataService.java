@@ -193,11 +193,6 @@ public class IndexDataService {
         return indexDataMapper.toDto(indexData);
     }
 
-    private IndexData validateAndGetIndexData(UUID id) {
-        return indexDataRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException(id + "를 가진 IndexData를 찾을 수 없습니다."));
-    }
-
     private Slice<IndexData> findIndexDataSlice(
             UUID indexInfoId,
             LocalDate startDate,
@@ -294,5 +289,14 @@ public class IndexDataService {
         return requestValue != null && requestValue.compareTo(indexDataValue) != 0
                 ? requestValue
                 : null;
+    }
+
+    private IndexData validateAndGetIndexData(UUID id) {
+        return indexDataRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException(id + "를 가진 IndexData를 찾을 수 없습니다."));
+    }
+    private void validateIndexData(UUID id) {
+        indexDataRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException(id + "를 가진 IndexData를 찾을 수 없습니다."));
     }
 }
