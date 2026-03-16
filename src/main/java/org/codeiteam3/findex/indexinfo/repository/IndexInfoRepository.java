@@ -48,13 +48,23 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
     WHERE (:indexClassification IS NULL OR i.indexClassification LIKE CONCAT('%', :indexClassification, '%'))
     AND (:indexName IS NULL OR i.indexName LIKE CONCAT('%', :indexName, '%'))
     AND (:favorite IS NULL OR i.favorite = :favorite)
-    AND (:cursor IS NULL OR
+    AND (
+        :cursor IS NULL OR
+        (
             (CASE
                 WHEN :sortField = 'indexClassification' THEN i.indexClassification
                 WHEN :sortField = 'indexName' THEN i.indexName
-             END) < :cursor
+            END) < :cursor
+            OR
+            (
+                (CASE
+                    WHEN :sortField = 'indexClassification' THEN i.indexClassification
+                    WHEN :sortField = 'indexName' THEN i.indexName
+                END) = :cursor
+                AND i.id < :idAfter
+            )
+        )
     )
-    AND (:idAfter IS NULL OR i.id < :idAfter)
     ORDER BY
         CASE
             WHEN :sortField = 'indexClassification' THEN i.indexClassification
@@ -79,19 +89,29 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
     WHERE (:indexClassification IS NULL OR i.indexClassification LIKE CONCAT('%', :indexClassification, '%'))
     AND (:indexName IS NULL OR i.indexName LIKE CONCAT('%', :indexName, '%'))
     AND (:favorite IS NULL OR i.favorite = :favorite)
-    AND (:cursor IS NULL OR
+    AND (
+        :cursor IS NULL OR
+        (
             (CASE
                 WHEN :sortField = 'indexClassification' THEN i.indexClassification
                 WHEN :sortField = 'indexName' THEN i.indexName
-             END) > :cursor
+            END) > :cursor
+            OR
+            (
+                (CASE
+                    WHEN :sortField = 'indexClassification' THEN i.indexClassification
+                    WHEN :sortField = 'indexName' THEN i.indexName
+                END) = :cursor
+                AND i.id > :idAfter
+            )
+        )
     )
-    AND (:idAfter IS NULL OR i.id > :idAfter)
     ORDER BY
         CASE
             WHEN :sortField = 'indexClassification' THEN i.indexClassification
             WHEN :sortField = 'indexName' THEN i.indexName
         END ASC,
-        i.id ASC 
+        i.id ASC
     """)
     Slice<IndexInfo> findAllByStringCursorAsc(
             @Param("indexClassification") String indexClassification,
@@ -109,8 +129,14 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
     WHERE (:indexClassification IS NULL OR i.indexClassification LIKE CONCAT('%', :indexClassification, '%'))
     AND (:indexName IS NULL OR i.indexName LIKE CONCAT('%', :indexName, '%'))
     AND (:favorite IS NULL OR i.favorite = :favorite)
-    AND (:cursor IS NULL OR i.employedItemsCount < :cursor)
-    AND (:idAfter IS NULL OR i.id < :idAfter)
+    AND (
+        :cursor IS NULL OR
+        (
+            i.employedItemsCount < :cursor
+            OR
+            (i.employedItemsCount = :cursor AND i.id < :idAfter)
+        )
+    )
     ORDER BY i.employedItemsCount DESC, i.id DESC
     """)
     Slice<IndexInfo> findAllByIntegerCursorDesc(
@@ -128,8 +154,14 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
     WHERE (:indexClassification IS NULL OR i.indexClassification LIKE CONCAT('%', :indexClassification, '%'))
     AND (:indexName IS NULL OR i.indexName LIKE CONCAT('%', :indexName, '%'))
     AND (:favorite IS NULL OR i.favorite = :favorite)
-    AND (:cursor IS NULL OR i.employedItemsCount > :cursor)
-    AND (:idAfter IS NULL OR i.id > :idAfter)
+    AND (
+        :cursor IS NULL OR
+        (
+            i.employedItemsCount > :cursor
+            OR
+            (i.employedItemsCount = :cursor AND i.id > :idAfter)
+        )
+    )
     ORDER BY i.employedItemsCount ASC, i.id ASC
     """)
     Slice<IndexInfo> findAllByIntegerCursorAsc(
