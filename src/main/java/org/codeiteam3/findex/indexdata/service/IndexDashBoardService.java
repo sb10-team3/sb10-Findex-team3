@@ -14,6 +14,7 @@ import org.codeiteam3.findex.indexdata.mapper.RankedIndexPerformanceMapper;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +35,12 @@ public class IndexDashBoardService {
     private final RankedIndexPerformanceMapper rankedIndexPerformanceMapper;
 
     @Transactional(readOnly = true)
-    public IndexChartDto find(UUID indexInfoId, PeriodType periodType){
-        List<IndexData> dataList = indexDataRepository.findByIndexInfoIdOrderByBaseDate(indexInfoId);
-        IndexInfo indexInfo = indexInfoRepository.findById(indexInfoId).orElseThrow(() -> new NoSuchElementException(indexInfoId + " 지수정보가 없습니다."));
+    public IndexChartDto findIndexChart(UUID indexInfoId, PeriodType periodType){
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = calculatePastDate(startDate, periodType);
 
+        List<IndexData> dataList = indexDataRepository.findChartDataByPeriod(indexInfoId, endDate,startDate);
+        IndexInfo indexInfo = indexInfoRepository.findById(indexInfoId).orElseThrow(() -> new NoSuchElementException(indexInfoId + " 지수정보가 없습니다."));
 
         // 5일 이동평균선 데이터
         Queue<BigDecimal> window5 = new LinkedList<>();
@@ -170,6 +173,8 @@ public class IndexDashBoardService {
             case DAILY -> today.minusDays(1);
             case WEEKLY -> today.minusWeeks(1);
             case MONTHLY -> today.minusMonths(1);
+            case QUARTERLY -> today.minusMonths(3);
+            case YEARLY -> today.minusYears(1);
             default -> throw new IllegalArgumentException("지원하지 않는 기간 유형입니다: " + periodType);
         };
     }
