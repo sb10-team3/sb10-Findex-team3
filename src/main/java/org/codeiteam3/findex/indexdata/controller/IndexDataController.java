@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -63,6 +62,24 @@ public class IndexDataController {
     ) {
         CursorPageResponseIndexDataDto responseDto = indexDataService.findAll(indexInfoId, startDate, endDate, idAfter, cursor, sortField, sortDirection, size);
 
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "지수 데이터 수정", description = "기존 지수 데이터를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "지수 데이터 수정 성공", content = @Content(schema = @Schema(implementation = IndexDataDto.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (유효하지 않은 데이터 값 등)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "수정할 지수 데이터를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<IndexDataDto> update(
+            @Parameter(description = "지수 데이터 ID") @PathVariable UUID id,
+            @Valid @Parameter @RequestBody IndexDataUpdateRequest request
+    ) {
+        IndexDataDto responseDto = indexDataService.update(id, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
