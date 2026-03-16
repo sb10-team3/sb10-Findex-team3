@@ -2,6 +2,7 @@ package org.codeiteam3.findex.syncjob.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.codeiteam3.findex.enums.Result;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
@@ -148,7 +149,7 @@ public class SyncJobService {
                     false
             );
 
-            return new SyncJob(
+            return toSyncJob(
                     indexInfo,
                     JobType.INDEX_INFO,
                     null,
@@ -158,7 +159,7 @@ public class SyncJobService {
             );
         }
 
-        return new SyncJob(
+        return toSyncJob(
                 indexInfo,
                 JobType.INDEX_INFO,
                 null,
@@ -240,7 +241,7 @@ public class SyncJobService {
                     indexInfo.getIndexClassification(),
                     LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")))
             ){
-                return new SyncJob(
+                return toSyncJob(
                         indexInfo,
                         JobType.INDEX_DATA,
                         LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
@@ -265,7 +266,7 @@ public class SyncJobService {
                         Long.parseLong(item.lstgMrktTotAmt())
                 ));
 
-                return new SyncJob(
+                return toSyncJob(
                         indexInfo,
                         JobType.INDEX_DATA,
                         LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
@@ -275,7 +276,7 @@ public class SyncJobService {
                 );
             }
         }catch (DataAccessException e){
-            return new SyncJob(
+            return toSyncJob(
                     indexInfo,
                     JobType.INDEX_DATA,
                     LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
@@ -286,4 +287,22 @@ public class SyncJobService {
         }
     }
 
+
+    private SyncJob toSyncJob(
+            IndexInfo indexInfo,
+            JobType jobType,
+            LocalDate targetDate,
+            String worker,
+            LocalDate jobTime,
+            Result result
+    ){
+        return new SyncJob(
+                indexInfo,
+                jobType,
+                targetDate,
+                worker,
+                jobTime,
+                result
+        );
+    }
 }
