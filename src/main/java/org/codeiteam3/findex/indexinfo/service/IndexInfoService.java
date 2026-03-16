@@ -9,6 +9,7 @@ import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexinfo.dto.data.CursorPageResponseIndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
+import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoUpdateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.mapper.IndexInfoMapper;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -199,6 +201,18 @@ public class IndexInfoService {
     public IndexInfo findById(UUID id){
         return indexInfoRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " 지수 정보가 없습니다."));
 
+    }
+
+    public IndexInfo update(UUID id, IndexInfoUpdateRequest indexInfoUpdateRequest){
+        Integer employedItemsCount =  indexInfoUpdateRequest.employedItemsCount();
+        LocalDate basePointInTime =  indexInfoUpdateRequest.basePointInTime();
+        BigDecimal baseIndex =  indexInfoUpdateRequest.baseIndex();
+        Boolean favorite = indexInfoUpdateRequest.favorite();
+
+        IndexInfo indexInfo = indexInfoRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " 에 해당하는 지수정보가 없습니다."));
+        indexInfo.update(employedItemsCount,basePointInTime,baseIndex,favorite); //자동 save된다.
+
+        return indexInfo;
     }
 
 }
