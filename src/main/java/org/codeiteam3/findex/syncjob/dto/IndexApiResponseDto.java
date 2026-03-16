@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.sync_job.dto;
+package org.codeiteam3.findex.syncjob.dto;
 
 import java.util.List;
 

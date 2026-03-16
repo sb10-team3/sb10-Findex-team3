@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.sync_job.entity;
+package org.codeiteam3.findex.syncjob.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

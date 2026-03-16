@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.sync_job.config;
+package org.codeiteam3.findex.syncjob.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
