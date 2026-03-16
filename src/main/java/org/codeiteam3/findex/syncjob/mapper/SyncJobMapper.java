@@ -1,7 +1,7 @@
-package org.codeiteam3.findex.sync_job.mapper;
+package org.codeiteam3.findex.syncjob.mapper;
 
-import org.codeiteam3.findex.sync_job.entity.SyncJob;
-import org.codeiteam3.findex.sync_job.dto.SyncJobDto;
+import org.codeiteam3.findex.syncjob.entity.SyncJob;
+import org.codeiteam3.findex.syncjob.dto.SyncJobDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
