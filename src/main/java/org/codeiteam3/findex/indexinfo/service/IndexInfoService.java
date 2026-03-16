@@ -229,4 +229,9 @@ public class IndexInfoService {
         return indexInfo;
     }
 
+    public void delete(UUID id){
+        IndexInfo indexInfo = indexInfoRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " 에 해당하는 지수정보가 없습니다."));
+        indexInfoRepository.delete(indexInfo);
+    }
+
 }
