@@ -44,8 +44,6 @@ public class SyncJobService {
     private final SyncJobMapper syncJobMapper;
     private final AutoSyncConfigRepository autoSyncConfigRepository;
 
-//    private final String API_KEY = "5c1a32de77483aa31eb13746d9abd7b75b08d47e2d2256a38cda7a8c18f39d91";
-
     @Value("${findex.api.key}")
     private String API_KEY;
     //지수 정보
