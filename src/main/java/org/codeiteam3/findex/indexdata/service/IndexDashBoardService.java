@@ -126,14 +126,16 @@ public class IndexDashBoardService {
                                 ? todayData.getFluctuationRate() : BigDecimal.ZERO;
                         versus = (todayData.getVersus() != null)
                                 ? todayData.getVersus() : BigDecimal.ZERO;
-                        beforePrice = currentPrice.subtract(currentPrice);
+                        beforePrice = currentPrice.subtract(versus);
                     } else{
                         if(pastData != null && pastData.getClosingPrice() != null){
                             beforePrice = pastData.getClosingPrice();
+                            // 전 가격이 0아 아니라면
                             if(beforePrice.compareTo(BigDecimal.ZERO) != 0){
                                 // 대비
                                 versus = currentPrice.subtract(beforePrice);
                                 // 등략률
+                                // 등락률 계산 = 현재가 - 과거가 / 과거가 * 100
                                 fluctuationRate = versus.divide(beforePrice, 2, RoundingMode.HALF_UP)
                                         .multiply(new BigDecimal("100"));
                             }
@@ -142,14 +144,14 @@ public class IndexDashBoardService {
 
                     return indexPerformanceMapper.toDto(todayData, versus, fluctuationRate, currentPrice, beforePrice);
                 })
-                // 등락율 기준으로 내림차순 정렬
+                // 등락률 기준으로 내림차순 정렬
                 .sorted((a, b) -> {
                     // NullPointerException 방어 (안전한 정렬을 위해 null을 0으로 취급)
                     BigDecimal rateA = a.getFluctuationRate() != null ? a.getFluctuationRate() : BigDecimal.ZERO;
                     BigDecimal rateB = b.getFluctuationRate() != null ? b.getFluctuationRate() : BigDecimal.ZERO;
                     return rateB.compareTo(rateA);
                 })
-                // 특정 지수면 최신것만 아니라면 limit까지 보여줌
+                // 특정 지수면 최신것만, 아니라면 limit까지 보여줌
                 .limit((indexInfoId != null) ? limit : 1)
                 .toList();
 
