@@ -184,6 +184,7 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
 
 
+    // 특정 기간 내의 지수 데이터 조회
     @Query("SELECT d FROM IndexData d " +
             "JOIN FETCH d.indexInfo i " +
             "WHERE i.id = :indexInfoId " +
