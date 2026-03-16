@@ -27,4 +27,8 @@ public class AutoSyncConfig {
         this.indexInfo = indexInfo;
         this.enabled = enabled;
     }
+
+    public void update(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

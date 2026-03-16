@@ -2,6 +2,9 @@ package org.codeiteam3.findex.syncjob.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.repository.AutoSyncConfigRepository;
+import org.codeiteam3.findex.autosyncconfig.service.AutoSyncConfigService;
 import org.codeiteam3.findex.enums.Result;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
@@ -38,6 +41,7 @@ public class SyncJobService {
     private final IndexInfoRepository indexInfoRepository;
     private final WebClient webClient;
     private final SyncJobMapper syncJobMapper;
+    private final AutoSyncConfigRepository autoSyncConfigRepository;
 
     private final String API_KEY = "5c1a32de77483aa31eb13746d9abd7b75b08d47e2d2256a38cda7a8c18f39d91";
 
@@ -137,6 +141,9 @@ public class SyncJobService {
                         false
                 );
                 indexInfoRepository.save(indexInfo);
+                if(autoSyncConfigRepository.findByIndexInfoId(indexInfo.getId()) == null){
+                    autoSyncConfigRepository.save(new AutoSyncConfig(indexInfo, false));
+                }
             }
         }catch (DataAccessException e){
             indexInfo = new IndexInfo(
