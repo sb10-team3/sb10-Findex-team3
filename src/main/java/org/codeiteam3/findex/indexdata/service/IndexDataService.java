@@ -39,7 +39,7 @@ public class IndexDataService {
     public IndexDataDto create(IndexDataCreateRequest request) {
         UUID indexInfoId = request.indexInfoId();
 
-        // 지수 데이터 존재 여부
+        // indexInfoId와 baseDate로 지수 데이터 존재 여부 검증
         if (indexDataRepository.existsByIndexInfoIdAndBaseDate(indexInfoId, request.baseDate())) {
             throw new IllegalArgumentException("같은 지수와 날짜가 데이터에 이미 존재합니다.");
         }
@@ -96,7 +96,7 @@ public class IndexDataService {
             throw new IllegalArgumentException(" 페이지 크기(size)는 1 이상이어야 합니다.");
         }
 
-        // 지수 데이터 존재 확인
+        // indexInfoId로 지수 정보 존재 여부 검증
         if (indexInfoId != null) {
             indexInfoRepository.findById(indexInfoId)
                     .orElseThrow(() ->new NoSuchElementException(indexInfoId + "를 가진 IndexInfo를 찾을 수 없습니다."));
