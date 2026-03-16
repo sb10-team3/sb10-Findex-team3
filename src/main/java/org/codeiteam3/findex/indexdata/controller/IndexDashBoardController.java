@@ -27,7 +27,7 @@ public class IndexDashBoardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/perfomance/rank")
+    @GetMapping(value = "/performance/rank")
     public ResponseEntity<List<RankedIndexPerformanceDto>> findIndexPerformanceRank(
             @RequestParam(required = false) UUID indexInfoId,
             @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType,
