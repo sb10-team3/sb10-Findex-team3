@@ -42,7 +42,7 @@ public class IndexInfoController {
                                                                   @Parameter(description = "커서 (다음 페이지 시작점)") @RequestParam(required = false) String cursor,
                                                                   @Parameter(description = "정렬필드(indexClassification,indexName,employedItemsCount)") @RequestParam(required = false) String sortField,
                                                                   @Parameter(description = "정렬방향(asc,desc)") @RequestParam(required = false) String sortDirection,
-                                                                  @Parameter(description = "페이지 크기") @RequestParam(required = false) Integer size
+                                                                  @Parameter(description = "페이지 크기") @RequestParam(required = false,defaultValue = "10") int size
 
                                                                   ) {
         CursorPageResponseIndexInfoDto responseDto = indexInfoService.findAll(indexClassification,indexName,favorite,idAfter,cursor,sortField,sortDirection,size);

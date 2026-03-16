@@ -66,7 +66,7 @@ public class IndexInfoService {
 
         return saved;
     }
-    public CursorPageResponseIndexInfoDto findAll(String indexClassification,String indexName,Boolean favorite,UUID idAfter,String cursor,String sortField,String sortDirection,Integer size){
+    public CursorPageResponseIndexInfoDto findAll(String indexClassification,String indexName,Boolean favorite,UUID idAfter,String cursor,String sortField,String sortDirection, int size){
 
         // cursor
         String normalizedCursor  = (cursor == null || cursor.isBlank()) ? null : cursor;
