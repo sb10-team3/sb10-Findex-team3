@@ -184,8 +184,17 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
 
 
 
-
-    List<IndexData> findByIndexInfoIdOrderByBaseDate(UUID indexInfoId);
+    // 특정 기간 내의 지수 데이터 조회
+    @Query("SELECT d FROM IndexData d " +
+            "JOIN FETCH d.indexInfo i " +
+            "WHERE i.id = :indexInfoId " +
+            "AND d.baseDate BETWEEN :startDate AND :endDate " +
+            "ORDER BY d.baseDate ASC")
+    List<IndexData> findChartDataByPeriod(
+            @Param("indexInfoId") UUID indexInfoId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
     // 특정 지수 조회 시
     // 특정 지수를 기준일로 이하로 내림차순으로 정렬했을때 가장 최신의 지수 데이터를 조회
     @EntityGraph(attributePaths = "indexInfo")

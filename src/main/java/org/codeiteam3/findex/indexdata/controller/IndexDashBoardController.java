@@ -22,12 +22,12 @@ public class IndexDashBoardController {
 
     @GetMapping(value = "/{id}/chart")
     public ResponseEntity<IndexChartDto> findIndexChart(@PathVariable("id") UUID indexInfoId,
-                                         @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType){
-        IndexChartDto response = indexDashBoardService.find(indexInfoId, periodType);
+                                         @RequestParam(required = false, defaultValue = "MONTHLY") PeriodType periodType){
+        IndexChartDto response = indexDashBoardService.findIndexChart(indexInfoId, periodType);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/perfomance/rank")
+    @GetMapping(value = "/performance/rank")
     public ResponseEntity<List<RankedIndexPerformanceDto>> findIndexPerformanceRank(
             @RequestParam(required = false) UUID indexInfoId,
             @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType,
