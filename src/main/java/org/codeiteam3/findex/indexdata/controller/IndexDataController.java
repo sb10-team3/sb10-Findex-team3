@@ -83,4 +83,17 @@ public class IndexDataController {
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
+    @DeleteMapping(value = "/{id}")
+    @Operation(summary = "지수 데이터 삭제", description = "지수 데이터를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "지수 데이터 삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "삭제할 지수 데이터를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<Void> delete(@Parameter(description = "지수 데이터 ID") @PathVariable UUID id) {
+        indexDataService.delete(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
