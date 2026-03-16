@@ -534,11 +534,6 @@ public class SyncJobService {
         };
     }
 
-    private LocalDateTime parseLocalDateTimeCursor(String cursor){
-        if(cursor == null) return null;
-        return LocalDateTime.parse(cursor);
-    }
-
     private LocalDate parseLocalDateCursor(String cursor){
         if(cursor == null) return null;
         return LocalDate.parse(cursor);
