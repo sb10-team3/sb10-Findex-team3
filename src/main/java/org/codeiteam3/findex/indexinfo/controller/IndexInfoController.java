@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.common.CursorPageResponse;
+import org.codeiteam3.findex.indexinfo.dto.data.CursorPageResponseIndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
