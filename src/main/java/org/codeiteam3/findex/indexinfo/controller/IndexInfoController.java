@@ -58,7 +58,7 @@ public class IndexInfoController {
 
     }
 
-    @PatchMapping("/id")
+    @PatchMapping("/{id}")
     public ResponseEntity<IndexInfoDto> update(@PathVariable("id") UUID id,
                                                @RequestBody IndexInfoUpdateRequest indexInfoUpdateRequest){
         IndexInfo indexInfo = indexInfoService.update(id,indexInfoUpdateRequest);
