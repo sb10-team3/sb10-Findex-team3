@@ -65,12 +65,6 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
             )
         )
     )
-    ORDER BY
-        CASE
-            WHEN :sortField = 'indexClassification' THEN i.indexClassification
-            WHEN :sortField = 'indexName' THEN i.indexName
-        END DESC,
-        i.id DESC
     """)
     Slice<IndexInfo> findAllByStringCursorDesc(
             @Param("indexClassification") String indexClassification,
@@ -106,12 +100,6 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
             )
         )
     )
-    ORDER BY
-        CASE
-            WHEN :sortField = 'indexClassification' THEN i.indexClassification
-            WHEN :sortField = 'indexName' THEN i.indexName
-        END ASC,
-        i.id ASC
     """)
     Slice<IndexInfo> findAllByStringCursorAsc(
             @Param("indexClassification") String indexClassification,
@@ -137,7 +125,6 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
             (i.employedItemsCount = :cursor AND i.id < :idAfter)
         )
     )
-    ORDER BY i.employedItemsCount DESC, i.id DESC
     """)
     Slice<IndexInfo> findAllByIntegerCursorDesc(
             @Param("indexClassification") String indexClassification,
@@ -162,7 +149,6 @@ public interface IndexInfoRepository extends JpaRepository<IndexInfo, UUID> {
             (i.employedItemsCount = :cursor AND i.id > :idAfter)
         )
     )
-    ORDER BY i.employedItemsCount ASC, i.id ASC
     """)
     Slice<IndexInfo> findAllByIntegerCursorAsc(
             @Param("indexClassification") String indexClassification,
