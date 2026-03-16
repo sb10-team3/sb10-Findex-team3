@@ -127,5 +127,6 @@ public class IndexData {
         if (tradingQuantity != null) this.tradingQuantity = tradingQuantity;
         if (tradingPrice != null) this.tradingPrice = tradingPrice;
         if (marketTotalAmount != null) this.marketTotalAmount = marketTotalAmount;
+        this.sourceType = SourceType.USER;
     }
 }
