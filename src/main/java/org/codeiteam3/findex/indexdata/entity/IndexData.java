@@ -105,4 +105,28 @@ public class IndexData {
         this.tradingPrice = tradingPrice;
         this.marketTotalAmount = marketTotalAmount;
     }
+
+    public void update(
+            BigDecimal marketPrice,
+            BigDecimal closingPrice,
+            BigDecimal highPrice,
+            BigDecimal lowPrice,
+            BigDecimal versus,
+            BigDecimal fluctuationRate,
+            Long tradingQuantity,
+            Long tradingPrice,
+            Long marketTotalAmount
+    ) {
+        // null이 아니면 update
+        if (marketPrice != null) this.marketPrice = marketPrice;
+        if (closingPrice != null) this.closingPrice = closingPrice;
+        if (highPrice != null) this.highPrice = highPrice;
+        if (lowPrice != null) this.lowPrice = lowPrice;
+        if (versus != null) this.versus = versus;
+        if (fluctuationRate != null) this.fluctuationRate = fluctuationRate;
+        if (tradingQuantity != null) this.tradingQuantity = tradingQuantity;
+        if (tradingPrice != null) this.tradingPrice = tradingPrice;
+        if (marketTotalAmount != null) this.marketTotalAmount = marketTotalAmount;
+        this.sourceType = SourceType.USER;
+    }
 }
