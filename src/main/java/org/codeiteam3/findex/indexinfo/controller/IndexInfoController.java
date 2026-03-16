@@ -9,6 +9,7 @@ import org.codeiteam3.findex.common.CursorPageResponse;
 import org.codeiteam3.findex.indexinfo.dto.data.CursorPageResponseIndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
+import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoUpdateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.mapper.IndexInfoMapper;
 import org.codeiteam3.findex.indexinfo.service.IndexInfoService;
@@ -54,6 +55,16 @@ public class IndexInfoController {
         IndexInfo indexInfo = indexInfoService.findById(id);
         IndexInfoDto indexInfoDto = indexInfoMapper.toDto(indexInfo);
         return ResponseEntity.ok(indexInfoDto);
+
+    }
+
+    @PatchMapping("/id")
+    public ResponseEntity<IndexInfoDto> update(@PathVariable("id") UUID id,
+                                               @RequestBody IndexInfoUpdateRequest indexInfoUpdateRequest){
+        IndexInfo indexInfo = indexInfoService.update(id,indexInfoUpdateRequest);
+        IndexInfoDto indexInfoDto = indexInfoMapper.toDto(indexInfo);
+        return ResponseEntity.ok(indexInfoDto);
+
 
     }
 }
