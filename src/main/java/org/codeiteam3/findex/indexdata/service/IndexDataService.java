@@ -7,6 +7,7 @@ import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexdata.dto.CursorPageResponseIndexDataDto;
 import org.codeiteam3.findex.indexdata.dto.IndexDataCreateRequest;
 import org.codeiteam3.findex.indexdata.dto.IndexDataDto;
+import org.codeiteam3.findex.indexdata.dto.IndexDataUpdateRequest;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.mapper.IndexDataMapper;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
@@ -21,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -152,6 +150,50 @@ public class IndexDataService {
         );
     }
 
+    // 지수 데이터 수정
+    public IndexDataDto update(UUID id, IndexDataUpdateRequest request) {
+        // 지수 데이터 존재 확인
+        IndexData indexData = indexDataRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException(id + "를 가진 IndexData를 찾을 수 없습니다."));
+
+        BigDecimal newMarketPrice = changedBigDecimal(request.marketPrice(), indexData.getMarketPrice());
+        BigDecimal newClosingPrice = changedBigDecimal(request.closingPrice(), indexData.getClosingPrice());
+        BigDecimal newHighPrice = changedBigDecimal(request.highPrice(), indexData.getHighPrice());
+        BigDecimal newLowPrice = changedBigDecimal(request.lowPrice(), indexData.getLowPrice());
+        BigDecimal newVersus = changedBigDecimal(request.versus(), indexData.getVersus());
+        BigDecimal newFluctuationRate = changedBigDecimal(request.fluctuationRate(), indexData.getFluctuationRate());
+        Long newTradingQuantity = changedLong(request.tradingQuantity(), indexData.getTradingQuantity());
+        Long newTradingPrice = changedLong(request.tradingPrice(), indexData.getTradingPrice());
+        Long newMarketTotalAmount = changedLong(request.marketTotalAmount(), indexData.getMarketTotalAmount());
+
+        // 전부 입력 X이거나 전부 현재 값과 동일(전부 null)할 때 검증
+        validateAllRequestExistingOrNull(
+                newMarketPrice,
+                newClosingPrice,
+                newHighPrice,
+                newLowPrice,
+                newVersus,
+                newFluctuationRate,
+                newTradingQuantity,
+                newTradingPrice,
+                newMarketTotalAmount
+        );
+
+        indexData.update(
+                newMarketPrice,
+                newClosingPrice,
+                newHighPrice,
+                newLowPrice,
+                newVersus,
+                newFluctuationRate,
+                newTradingQuantity,
+                newTradingPrice,
+                newMarketTotalAmount
+        );
+
+        return indexDataMapper.toDto(indexData);
+    }
+
     private Slice<IndexData> findIndexDataSlice(
             UUID indexInfoId,
             LocalDate startDate,
@@ -213,5 +255,40 @@ public class IndexDataService {
             case "marketTotalAmount" -> lastIndexData.marketTotalAmount().toString();
             default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
         };
+    }
+
+    private void validateAllRequestExistingOrNull(
+            BigDecimal newMarketPrice,
+            BigDecimal newClosingPrice,
+            BigDecimal newHighPrice,
+            BigDecimal newLowPrice,
+            BigDecimal newVersus,
+            BigDecimal newFluctuationRate,
+            Long newTradingQuantity,
+            Long newTradingPrice,
+            Long newMarketTotalAmount
+    ) {
+        if (newMarketPrice == null
+                && newClosingPrice == null
+                && newHighPrice == null
+                && newLowPrice == null
+                && newVersus == null
+                && newFluctuationRate == null
+                && newTradingQuantity == null
+                && newTradingPrice == null
+                && newMarketTotalAmount == null) {
+            throw new IllegalArgumentException("변경사항이 없습니다.");
+        }
+    }
+
+    private BigDecimal changedBigDecimal(BigDecimal requestValue, BigDecimal indexDataValue) {
+        return requestValue != null && requestValue.compareTo(indexDataValue) != 0
+                ? requestValue
+                : null;
+    }
+    private Long changedLong(Long requestValue, Long indexDataValue) {
+        return requestValue != null && requestValue.compareTo(indexDataValue) != 0
+                ? requestValue
+                : null;
     }
 }
