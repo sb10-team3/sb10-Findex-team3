@@ -15,7 +15,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI openAPI() {
         Server localServer = new Server()
-                .url("http://localhost:8080/swagger-ui/index.html")
+                .url("http://localhost:8080/index.html")
                 .description("local url");
 
         return new OpenAPI()
