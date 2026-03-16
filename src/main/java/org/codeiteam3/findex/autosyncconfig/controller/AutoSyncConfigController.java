@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/api/v1/auto-sync-configs")
+@RequestMapping("/api/auto-sync-configs")
 @RequiredArgsConstructor
 public class AutoSyncConfigController {
     private final AutoSyncConfigService autoSyncConfigService;
