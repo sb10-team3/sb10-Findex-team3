@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.common.CursorPageResponse;
 import org.codeiteam3.findex.indexinfo.dto.data.CursorPageResponseIndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;
+import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoSummaryDto;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoCreateRequest;
 import org.codeiteam3.findex.indexinfo.dto.request.IndexInfoUpdateRequest;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,6 +58,13 @@ public class IndexInfoController {
         IndexInfoDto indexInfoDto = indexInfoMapper.toDto(indexInfo);
         return ResponseEntity.ok(indexInfoDto);
 
+    }
+
+    @GetMapping("/summaries")
+    public ResponseEntity<List<IndexInfoSummaryDto>> findSummaries(){
+
+        List<IndexInfoSummaryDto> indexInfosummaries = indexInfoService.findSummaries();
+        return ResponseEntity.ok(indexInfosummaries);
     }
 
     @PatchMapping("/{id}")
