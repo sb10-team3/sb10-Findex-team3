@@ -15,7 +15,7 @@ spring:
       schema-locations: classpath:schema.sql
   jackson:
     deserialization:
-      fail-on-unknown-properties: true
+      fail-on-unknown-properties: false
 
 logging:
   level:
