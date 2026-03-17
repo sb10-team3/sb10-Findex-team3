@@ -2,4 +2,4 @@ spring:
   application:
     name: Findex
   profiles:
-    active: h2
+    active: prod
