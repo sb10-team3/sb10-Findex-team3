@@ -47,6 +47,7 @@ AND (:result IS NULL OR i.result = :result)
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -67,6 +68,7 @@ AND (s.jobTime <= :jobTimeTo)
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -93,6 +95,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -119,6 +122,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -135,6 +139,7 @@ AND (:status IS NULL OR s.result = :status)
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -157,6 +162,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -180,6 +186,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -200,6 +207,7 @@ AND (s.jobTime <= :jobTimeTo)
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -226,6 +234,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -253,6 +262,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -269,6 +279,7 @@ AND (:status IS NULL OR s.result = :status)
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
@@ -291,6 +302,7 @@ AND (
     @Query("""
 SELECT s
 FROM SyncJob s
+JOIN FETCH s.indexInfo
 WHERE (:indexInfoId IS NULL OR s.indexInfo.id = :indexInfoId)
 AND (:jobType IS NULL OR s.jobType = :jobType)
 AND (:worker IS NULL OR s.worker = :worker)
