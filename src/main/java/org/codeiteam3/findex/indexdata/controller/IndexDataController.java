@@ -15,7 +15,9 @@ import org.codeiteam3.findex.indexdata.dto.IndexDataCreateRequest;
 import org.codeiteam3.findex.indexdata.dto.IndexDataDto;
 import org.codeiteam3.findex.indexdata.dto.IndexDataUpdateRequest;
 import org.codeiteam3.findex.indexdata.service.IndexDataService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,5 +97,29 @@ public class IndexDataController {
         indexDataService.delete(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/export/csv")
+    @Operation(summary = "지수 데이터 CSV 다운로드", description = "지수 데이터를 CSV 파일로 export합니다.")
+    public ResponseEntity<byte[]> exportCsv(
+            @Parameter(description = "지수 정보 ID") @RequestParam(required = false) UUID indexInfoId,
+            @Parameter(description = "시작 일자") @RequestParam(required = false) LocalDate startDate,
+            @Parameter(description = "종료 일자") @RequestParam(required = false) LocalDate endDate,
+            @Parameter(description = "정렬 필드") @RequestParam(required = false, defaultValue = "baseDate") String sortField,
+            @Parameter(description = "정렬 방향 (asc, desc)") @RequestParam(required = false, defaultValue = "desc") String sortDirection
+    ) {
+        byte[] csvData = indexDataService.exportToCsv(indexInfoId, startDate, endDate, sortField, sortDirection);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv; charset=UTF-8"));
+
+        // 파일명 동적 생성
+        String fileName = "index_data_" + LocalDate.now() + ".csv";
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(csvData.length)
+                .body(csvData);
     }
 }
