@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 public record IndexInfoUpdateRequest(
 
+
         Integer employedItemsCount,
 
         LocalDate basePointInTime,
