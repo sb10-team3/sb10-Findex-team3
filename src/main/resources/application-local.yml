@@ -27,3 +27,6 @@ findex:
     key: ${API_KEY}
     sync_cron: "0 1 15 * * *"
 
+server:
+  port: ${PORT:8080} #Railway 포트설정
+
