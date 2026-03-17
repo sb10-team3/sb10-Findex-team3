@@ -12,6 +12,8 @@ public interface IndexPerformanceMapper {
     @Mapping(target = "indexInfoId", source = "indexData.indexInfo.id")
     @Mapping(target = "indexClassification", source = "indexData.indexInfo.indexClassification")
     @Mapping(target = "indexName", source = "indexData.indexInfo.indexName")
+    @Mapping(source = "versus", target = "versus")
+    @Mapping(source = "fluctuationRate", target = "fluctuationRate")
     IndexPerformanceDto toDto(IndexData indexData,
                               BigDecimal versus,
                               BigDecimal fluctuationRate,
