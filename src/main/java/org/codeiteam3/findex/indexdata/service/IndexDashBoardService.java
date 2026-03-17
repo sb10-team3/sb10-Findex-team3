@@ -36,7 +36,7 @@ public class IndexDashBoardService {
 
     @Transactional(readOnly = true)
     public IndexChartDto findIndexChart(UUID indexInfoId, PeriodType periodType){
-        LocalDate startDate = LocalDate.now();
+        LocalDate startDate = getLatestBaseDate(indexInfoId);
         LocalDate endDate = calculatePastDate(startDate, periodType);
 
         List<IndexData> dataList = indexDataRepository.findChartDataByPeriod(indexInfoId, endDate,startDate);
@@ -93,7 +93,7 @@ public class IndexDashBoardService {
 
     @Transactional(readOnly = true)
     public List<RankedIndexPerformanceDto> findIndexPerformanceRank(UUID indexInfoId, PeriodType periodType, Integer limit){
-        LocalDate today = LocalDate.now();
+        LocalDate today = getLatestBaseDate(indexInfoId);
         LocalDate past = calculatePastDate(today, periodType);
 
         List<IndexData> todayIndexDatas;
@@ -104,7 +104,7 @@ public class IndexDashBoardService {
             todayIndexDatas = indexDataRepository.findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(indexInfoId,today);
             pastIndexDatas = indexDataRepository.findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(indexInfoId, past);
         // 전체 지수 조회
-        } else{
+        } else{;
             todayIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(today);
             pastIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(past);
         }
@@ -135,7 +135,7 @@ public class IndexDashBoardService {
 
     @Transactional(readOnly = true)
     public List<IndexPerformanceDto> findFavoriteIndexPerformance(PeriodType periodType){
-        LocalDate today = LocalDate.now();
+        LocalDate today = getLatestBaseDate(null);
         LocalDate past = calculatePastDate(today, periodType);
 
         List<IndexData> todayIndexDatas;
@@ -201,5 +201,13 @@ public class IndexDashBoardService {
                     }
                     return indexPerformanceMapper.toDto(todayData, versus, fluctuationRate, currentPrice, beforePrice);
                 }).toList();
+    }
+
+    private LocalDate getLatestBaseDate(UUID indexInfoId){
+        Optional<LocalDate> latestDate = (indexInfoId != null) ?
+                indexDataRepository.findLatestBaseDateByIndexInfoId(indexInfoId) :
+                indexDataRepository.findLatestBaseDate();
+
+        return latestDate.orElse(LocalDate.now());
     }
 }
