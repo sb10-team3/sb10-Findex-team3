@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,20 +42,18 @@ public class SyncJobController {
             @RequestParam(required = false) LocalDate baseDateFrom, //대상날짜
             @RequestParam(required = false) LocalDate baseDateTo,
             @RequestParam(required = false) String worker,//작업자
-            @RequestParam(required = false) LocalDate jobTimeFrom,//작업일시
-            @RequestParam(required = false) LocalDate jobTimeTo,
+            @RequestParam(required = false) LocalDateTime jobTimeFrom,//작업일시
+            @RequestParam(required = false) LocalDateTime jobTimeTo,
             @RequestParam(required = false) Result status,//결과
             @RequestParam(required = false) UUID idAfter,
             @RequestParam(required = false) String cursor,
             @RequestParam(required = false, defaultValue = "jobTime") String sortField,
             @RequestParam(required = false, defaultValue = "desc") String sortDirection,
             @RequestParam(required = false, defaultValue = "10") int size
-            ){
+    ){
         return ResponseEntity.status(200).body(syncJobService.findAll(
                 jobType,
                 indexInfoId,
-                baseDateFrom,
-                baseDateTo,
                 worker,
                 jobTimeFrom,
                 jobTimeTo,
