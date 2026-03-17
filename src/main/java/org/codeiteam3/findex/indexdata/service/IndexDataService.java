@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -198,6 +199,56 @@ public class IndexDataService {
         IndexData indexData = validateAndGetIndexData(id);
 
         indexDataRepository.delete(indexData);
+    }
+
+    // csv파일로 export
+    @Transactional(readOnly = true)
+    public byte[] exportToCsv(UUID indexInfoId, LocalDate startDate, LocalDate endDate, String sortField, String sortDirection) {
+
+        Set<String> allowedFields = Set.of(
+                "baseDate", "marketPrice", "closingPrice", "highPrice",
+                "lowPrice", "versus", "fluctuationRate", "tradingQuantity",
+                "tradingPrice", "marketTotalAmount"
+        );
+
+        if (sortField == null || !allowedFields.contains(sortField)) {
+            throw new IllegalArgumentException("지원하지 않는 정렬 필드입니다: " + sortField);
+        }
+
+        Sort.Direction direction = "asc".equalsIgnoreCase(sortDirection) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortField);
+
+        // 만약 파라미터로 날짜가 안들어오면 끝가지 가져옴
+        LocalDate effectiveStart = (startDate != null) ? startDate : LocalDate.of(1900, 1, 1);
+        LocalDate effectiveEnd = (endDate != null) ? endDate : LocalDate.of(2100, 12, 31);
+
+        List<IndexData> dataList;
+        if (indexInfoId != null) {
+            dataList = indexDataRepository.findAllByIndexInfoIdAndBaseDateBetween(indexInfoId, effectiveStart, effectiveEnd, sort);
+        } else {
+            dataList = indexDataRepository.findAllByBaseDateBetween(effectiveStart, effectiveEnd, sort);
+        }
+
+        // csv 조립
+        StringBuilder csvBuilder = new StringBuilder();
+        csvBuilder.append('\ufeff'); // 엑셀 한글 깨짐 방지
+        csvBuilder.append("기준일자,시가,종가,고가,저가,대비,등락률,거래량,거래대금,시가총액\n");
+
+        for (IndexData data : dataList) {
+            csvBuilder.append(data.getBaseDate() != null ? data.getBaseDate() : "").append(",")
+                    .append(data.getMarketPrice() != null ? data.getMarketPrice() : "").append(",")
+                    .append(data.getClosingPrice() != null ? data.getClosingPrice() : "").append(",")
+                    .append(data.getHighPrice() != null ? data.getHighPrice() : "").append(",")
+                    .append(data.getLowPrice() != null ? data.getLowPrice() : "").append(",")
+                    .append(data.getVersus() != null ? data.getVersus() : "").append(",")
+                    .append(data.getFluctuationRate() != null ? data.getFluctuationRate() : "").append(",")
+                    .append(data.getTradingQuantity() != null ? data.getTradingQuantity() : "").append(",")
+                    .append(data.getTradingPrice() != null ? data.getTradingPrice() : "").append(",")
+                    .append(data.getMarketTotalAmount() != null ? data.getMarketTotalAmount() : "")
+                    .append("\n");
+        }
+
+        return csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     private Slice<IndexData> findIndexDataSlice(

@@ -3,6 +3,7 @@ package org.codeiteam3.findex.indexdata.repository;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -181,7 +182,11 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             Pageable pageable
     );
 
+    // 전체 지수 조회용
+    List<IndexData> findAllByBaseDateBetween(LocalDate startDate, LocalDate endDate, Sort sort);
 
+    // 특정 지수 조회용
+    List<IndexData> findAllByIndexInfoIdAndBaseDateBetween(UUID indexInfoId, LocalDate startDate, LocalDate endDate, Sort sort);
 
 
     // 특정 기간 내의 지수 데이터 조회
