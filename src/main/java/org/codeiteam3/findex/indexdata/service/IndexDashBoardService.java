@@ -104,7 +104,7 @@ public class IndexDashBoardService {
             todayIndexDatas = indexDataRepository.findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(indexInfoId,today);
             pastIndexDatas = indexDataRepository.findTop1ByIndexInfoIdAndBaseDateLessThanEqualOrderByBaseDateDesc(indexInfoId, past);
         // 전체 지수 조회
-        } else{;
+        } else{
             todayIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(today);
             pastIndexDatas =  indexDataRepository.findLatestDataOfAllIndexesOnOrBefore(past);
         }
