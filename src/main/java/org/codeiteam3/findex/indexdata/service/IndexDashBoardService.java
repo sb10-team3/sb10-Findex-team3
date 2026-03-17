@@ -121,7 +121,7 @@ public class IndexDashBoardService {
                     return rateB.compareTo(rateA);
                 })
                 // 특정 지수면 최신것만, 아니라면 limit까지 보여줌
-                .limit((indexInfoId != null) ? limit : 1)
+                .limit((indexInfoId == null) ? limit : 1)
                 .toList();
 
         // RankedPerformanceDto로 반환
