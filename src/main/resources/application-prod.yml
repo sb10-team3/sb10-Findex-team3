@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -27,4 +27,6 @@ findex:
     key: ${API_KEY}
     sync_cron: "0 1 15 * * *"
 
+server:
+  port: ${PORT:8080} #Railway 포트설정
 
