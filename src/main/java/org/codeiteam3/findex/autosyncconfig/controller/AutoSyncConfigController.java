@@ -20,7 +20,7 @@ public class AutoSyncConfigController {
     @PatchMapping("/{id}")
     public ResponseEntity<AutoSyncConfigResponseDto> update(
             @RequestBody AutoSyncConfigUpdateRequestDto requestDto,
-            @PathVariable("id") UUID id
+            @PathVariable UUID id
     ) {
         return ResponseEntity.status(200).body(autoSyncConfigService.update(id, requestDto));
     }
