@@ -195,7 +195,7 @@ public interface IndexDataRepository extends JpaRepository<IndexData, UUID> {
             "JOIN FETCH d.indexInfo i " +
             "WHERE i.id = :indexInfoId " +
             "AND d.baseDate BETWEEN :startDate AND :endDate " +
-            "ORDER BY d.baseDate ASC")
+            "ORDER BY d.baseDate DESC")
     List<IndexData> findChartDataByPeriod(
             @Param("indexInfoId") UUID indexInfoId,
             @Param("startDate") LocalDate startDate,
