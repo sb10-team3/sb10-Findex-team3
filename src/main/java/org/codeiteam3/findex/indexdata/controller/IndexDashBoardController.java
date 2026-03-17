@@ -39,7 +39,7 @@ public class IndexDashBoardController {
     }
 
     @GetMapping(value = "/performance/favorite")
-    public ResponseEntity<List<IndexPerformanceDto>> findFavoirteIndexPerformance(
+    public ResponseEntity<List<IndexPerformanceDto>> findFavoriteIndexPerformance(
             @RequestParam(required = false, defaultValue = "DAILY") PeriodType periodType){
         List<IndexPerformanceDto> response =
                 indexDashBoardService.findFavoriteIndexPerformance(periodType);
