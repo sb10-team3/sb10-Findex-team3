@@ -112,10 +112,10 @@ public class IndexDataService {
         String normalizedSortField = sortField;
 
         // 정렬
-        Sort.Direction normalizedDirection = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction normalizedDirection = "asc".equalsIgnoreCase(sortDirection) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         // Pageable (cursor, sortField, 정렬, 갯수 적용)
-        Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection, "id")));
+        Pageable pageable = PageRequest.of(0, size);
 
         // 조회 조건에 따라 계산된 전체 데이터 수
         Long totalElements = indexDataRepository.countElements(indexInfoId, startDate, endDate);
@@ -263,20 +263,12 @@ public class IndexDataService {
     ) {
         // switch 문으로 sortField의 타입에 따라 다른 repo 메서드 사용
         return switch (normalizedSortField) {
-            case "baseDate" -> {
-                LocalDate localDateCursor = parseLocalDateCursor(normalizedCursor);
-                yield localDateCursor == null
-                        ? indexDataRepository.findAllByBaseDateFirstPage(indexInfoId, startDate, endDate, pageable)
-                        : normalizedDirection.isDescending()
-                            ? indexDataRepository.findAllByBaseDateNextPageDesc(indexInfoId, startDate, endDate, idAfter, localDateCursor, pageable)
-                            : indexDataRepository.findAllByBaseDateNextPageAsc(indexInfoId, startDate, endDate, idAfter, localDateCursor, pageable);
-            }
-            case "marketPrice", "closingPrice", "highPrice", "lowPrice", "versus", "fluctuationRate" -> normalizedDirection.isDescending()
-                    ? indexDataRepository.findAllByBigDecimalCursorDesc(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedSortField, pageable)
-                    : indexDataRepository.findAllByBigDecimalCursorAsc(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedSortField, pageable);
-            case "tradingQuantity", "tradingPrice", "marketTotalAmount" -> normalizedDirection.isDescending()
-                    ? indexDataRepository.findAllByLongCursorDesc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable)
-                    : indexDataRepository.findAllByLongCursorAsc(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedSortField, pageable);
+            case "baseDate" ->
+                    indexDataRepository.findAllByBaseDate(indexInfoId, startDate, endDate, idAfter, parseLocalDateCursor(normalizedCursor), normalizedDirection, pageable);
+            case "marketPrice", "closingPrice", "highPrice", "lowPrice", "versus", "fluctuationRate" ->
+                    indexDataRepository.findAllByBigDecimal(indexInfoId, startDate, endDate, idAfter, parseBigDecimalCursor(normalizedCursor), normalizedDirection, normalizedSortField, pageable);
+            case "tradingQuantity", "tradingPrice", "marketTotalAmount" ->
+                    indexDataRepository.findAllByLong(indexInfoId, startDate, endDate, idAfter, parseLongCursor(normalizedCursor), normalizedDirection, normalizedSortField, pageable);
             default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
         };
     }
