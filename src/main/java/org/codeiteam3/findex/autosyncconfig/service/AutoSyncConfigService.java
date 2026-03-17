@@ -53,7 +53,7 @@ public class AutoSyncConfigService {
 
         String normalizedCursor = (cursor == null || cursor.isBlank()) ? null : cursor;
 
-        Set<String> allowField = Set.of("indexInfoId", "enabled");
+        Set<String> allowField = Set.of("indexInfo.indexName");
 
         if (!allowField.contains(sortField)) {
             throw new IllegalArgumentException("적합하지 않은 정렬필드(sortField)입니다.");
@@ -68,7 +68,7 @@ public class AutoSyncConfigService {
 
         Pageable pageable = PageRequest.of(
                 0,
-                size + 1,
+                size,
                 Sort.by(normalizedDirection, normalizedSortField)
                         .and(Sort.by(normalizedDirection, "id"))
         );
@@ -120,34 +120,18 @@ public class AutoSyncConfigService {
 
         return switch (sortField){
 
-            case "indexInfoId" -> {
-                UUID cursorValue = parseUuidCursor(cursor);
+            case "indexInfo.indexName" -> {
 
-                yield cursorValue == null
+                yield cursor == null
                         ? autoSyncConfigRepository.findAllByIndexInfoFirstPage(indexInfoId, enabled, pageable)
                         : direction.isDescending()
-                        ? autoSyncConfigRepository.findAllByIndexInfoNextPageDesc(indexInfoId, enabled, idAfter, cursorValue, pageable)
-                        : autoSyncConfigRepository.findAllByIndexInfoNextPageAsc(indexInfoId, enabled, idAfter, cursorValue, pageable);
+                        ? autoSyncConfigRepository.findAllByIndexInfoNextPageDesc(indexInfoId, enabled, idAfter, cursor, pageable)
+                        : autoSyncConfigRepository.findAllByIndexInfoNextPageAsc(indexInfoId, enabled, idAfter, cursor, pageable);
             }
-
-            case "enabled" -> {
-                Boolean cursorValue = parseBooleanCursor(cursor);
-
-                yield cursorValue == null
-                        ? autoSyncConfigRepository.findAllByEnabledFirstPage(indexInfoId, enabled, pageable)
-                        : direction.isDescending()
-                        ? autoSyncConfigRepository.findAllByEnabledNextPageDesc(indexInfoId, enabled, idAfter, cursorValue, pageable)
-                        : autoSyncConfigRepository.findAllByEnabledNextPageAsc(indexInfoId, enabled, idAfter, cursorValue, pageable);
-            }
-
             default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
         };
     }
 
-    private UUID parseUuidCursor(String cursor){
-        if(cursor == null) return null;
-        return UUID.fromString(cursor);
-    }
 
     private Boolean parseBooleanCursor(String cursor){
         if(cursor == null) return null;
@@ -158,15 +142,11 @@ public class AutoSyncConfigService {
 
         return switch(sortField){
 
-            case "indexInfoId" -> last.indexInfoId().toString();
+            case "indexInfo.indexName" -> last.indexName();
 
             case "enabled" -> String.valueOf(last.enabled());
 
             default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
         };
     }
-
-
-
-
 }

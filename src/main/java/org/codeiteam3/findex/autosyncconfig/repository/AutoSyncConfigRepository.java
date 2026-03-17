@@ -24,42 +24,6 @@ public interface AutoSyncConfigRepository extends JpaRepository<AutoSyncConfig,U
     List<AutoSyncConfig> findEnabledWithIndexInfo();
 
     @Query("""
-SELECT a
-FROM AutoSyncConfig a
-WHERE (:indexInfoId IS NULL OR a.indexInfo.id = :indexInfoId)
-AND (:enabled IS NULL OR a.enabled = :enabled)
-AND (
-        a.enabled < :cursor
-        OR (a.enabled = :cursor AND a.id < :idAfter)
-)
-""")
-    Slice<AutoSyncConfig> findAllByEnabledNextPageDesc(
-            UUID indexInfoId,
-            Boolean enabled,
-            UUID idAfter,
-            Boolean cursor,
-            Pageable pageable
-    );
-
-    @Query("""
-SELECT a
-FROM AutoSyncConfig a
-WHERE (:indexInfoId IS NULL OR a.indexInfo.id = :indexInfoId)
-AND (:enabled IS NULL OR a.enabled = :enabled)
-AND (
-        a.enabled > :cursor
-        OR (a.enabled = :cursor AND a.id > :idAfter)
-)
-""")
-    Slice<AutoSyncConfig> findAllByEnabledNextPageAsc(
-            UUID indexInfoId,
-            Boolean enabled,
-            UUID idAfter,
-            Boolean cursor,
-            Pageable pageable
-    );
-
-    @Query("""
 SELECT COUNT(a)
 FROM AutoSyncConfig a
 WHERE (:indexInfoId IS NULL OR a.indexInfo.id = :indexInfoId)
@@ -88,15 +52,15 @@ FROM AutoSyncConfig a
 WHERE (:indexInfoId IS NULL OR a.indexInfo.id = :indexInfoId)
 AND (:enabled IS NULL OR a.enabled = :enabled)
 AND (
-        a.indexInfo.id < :cursor
-        OR (a.indexInfo.id = :cursor AND a.id < :idAfter)
+        a.indexInfo.indexName < :cursor
+        OR (a.indexInfo.indexName = :cursor AND a.id < :idAfter)
 )
 """)
     Slice<AutoSyncConfig> findAllByIndexInfoNextPageDesc(
             UUID indexInfoId,
             Boolean enabled,
             UUID idAfter,
-            UUID cursor,
+            String cursor,
             Pageable pageable
     );
 
@@ -106,15 +70,15 @@ FROM AutoSyncConfig a
 WHERE (:indexInfoId IS NULL OR a.indexInfo.id = :indexInfoId)
 AND (:enabled IS NULL OR a.enabled = :enabled)
 AND (
-        a.indexInfo.id > :cursor
-        OR (a.indexInfo.id = :cursor AND a.id > :idAfter)
+        a.indexInfo.indexName > :cursor
+        OR (a.indexInfo.indexName = :cursor AND a.id > :idAfter)
 )
 """)
     Slice<AutoSyncConfig> findAllByIndexInfoNextPageAsc(
             UUID indexInfoId,
             Boolean enabled,
             UUID idAfter,
-            UUID cursor,
+            String cursor,
             Pageable pageable
     );
 
