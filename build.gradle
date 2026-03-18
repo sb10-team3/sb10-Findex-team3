@@ -18,6 +18,20 @@ repositories {
     mavenCentral()
 }
 
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [querydslDir]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean {
+    delete file(querydslDir)
+}
+
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
