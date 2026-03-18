@@ -2,7 +2,7 @@ package org.codeiteam3.findex.syncjob.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.codeiteam3.findex.common.CursorPageResponse;
+import org.codeiteam3.findex.pagination.CursorPageResponse;
 import org.codeiteam3.findex.enums.JobType;
 import org.codeiteam3.findex.enums.Result;
 import org.codeiteam3.findex.syncjob.dto.IndexDataSyncRequestDto;

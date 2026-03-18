@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.codeiteam3.findex.autosyncconfig.dto.AutoSyncConfigResponseDto;
 import org.codeiteam3.findex.autosyncconfig.dto.AutoSyncConfigUpdateRequestDto;
 import org.codeiteam3.findex.autosyncconfig.service.AutoSyncConfigService;
-import org.codeiteam3.findex.common.CursorPageResponse;
+import org.codeiteam3.findex.pagination.CursorPageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
