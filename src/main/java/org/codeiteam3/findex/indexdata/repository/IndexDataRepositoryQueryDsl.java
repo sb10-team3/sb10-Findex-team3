@@ -7,9 +7,12 @@ import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface IndexDataRepositoryQueryDsl {
+
 
     Long countElements(UUID indexInfoId, LocalDate startDate, LocalDate endDate);
 
@@ -44,4 +47,19 @@ public interface IndexDataRepositoryQueryDsl {
             String normalizedSortField,
             Pageable pageable
     );
+
+    List<IndexData> findChartDataByPeriod(
+            UUID indexInfoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    List<IndexData> findLatestDataOfAllIndexesOnOrBefore(LocalDate targetDate);
+
+    List<IndexData> findFavoriteDataOnOrBefore(LocalDate targetDate);
+
+    Optional<LocalDate> findLatestBaseDateByIndexInfoId(UUID indexInfoId);
+
 }
+
+
