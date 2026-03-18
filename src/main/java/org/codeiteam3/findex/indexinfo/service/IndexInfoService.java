@@ -90,15 +90,13 @@ public class IndexInfoService {
         //SortDirection이 asc이면 ASC 아니면 DESC
         Sort.Direction normalizedDirection = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        //Pageable(cursor, sortField, 정렬, 갯수 적용)
-        //.and로 정렬조건 추가 SortField로 정렬이 안될경우를 대비해서 id로 정렬조건 추가
-        Pageable pageable = PageRequest.of(0, size, Sort.by(normalizedDirection, normalizedSortField).and(Sort.by(normalizedDirection,"id")));
+        Pageable pageable = PageRequest.of(0, size);
 
         //조회된 전체 데이터 수
         Long totalElements = indexInfoRepository.countElements(indexClassification,indexName,favorite);
 
         //지수 정보 조회
-        Slice<IndexInfoDto> indexInfoSlice = findIndexInfoSlice(indexClassification,indexName,favorite,idAfter,normalizedCursor,normalizedSortField,normalizedDirection,size,pageable)
+        Slice<IndexInfoDto> indexInfoSlice = findIndexInfoSlice(indexClassification,indexName,favorite,idAfter,normalizedCursor,normalizedSortField,normalizedDirection,pageable)
                 .map(indexInfoMapper::toDto);
 
         //조회정보 중 마지막 요소
@@ -137,46 +135,30 @@ public class IndexInfoService {
                                                 String normalizedCursor,
                                                 String normalizedSortField,
                                                 Sort.Direction normalizedDirection,
-                                                Integer size,
                                                 Pageable pageable){
         return switch (normalizedSortField) {
             case "indexClassification","indexName" ->
-                normalizedDirection.isDescending() ? indexInfoRepository.findAllByStringCursorDesc(
+                indexInfoRepository.findAllByString(
                         indexClassification,
                         indexName,
                         favorite,
                         idAfter,
                         normalizedCursor,
                         normalizedSortField,
+                        normalizedDirection,
                         pageable
-                )
-                : indexInfoRepository.findAllByStringCursorAsc(
-                indexClassification,
-                indexName,
-                favorite,
-                idAfter,
-                normalizedCursor,
-                normalizedSortField,
-                pageable
                 );
 
-            case "employedItemsCount" -> normalizedDirection.isDescending()
-                    ? indexInfoRepository.findAllByIntegerCursorDesc(
+            case "employedItemsCount" ->
+                    indexInfoRepository.findAllByInteger(
                     indexClassification,
                     indexName,
                     favorite,
                     idAfter,
                     parseIntegerCursor(normalizedCursor),
+                    normalizedDirection,
                     pageable
-            )
-                    : indexInfoRepository.findAllByIntegerCursorAsc(
-                    indexClassification,
-                    indexName,
-                    favorite,
-                    idAfter,
-                    parseIntegerCursor(normalizedCursor),
-                    pageable
-            );
+                    );
             default -> throw new IllegalArgumentException("제대로 되지 않은 sortField입니다.");
         };
 
@@ -189,8 +171,8 @@ public class IndexInfoService {
 
     private String findNextCursor(IndexInfoDto lastIndexInfo, String normalizedSortedField){
         return switch (normalizedSortedField){
-            case "indexClassification" -> lastIndexInfo.indexClassification().toString();
-            case "indexName" -> lastIndexInfo.indexName().toString();
+            case "indexClassification" -> lastIndexInfo.indexClassification();
+            case "indexName" -> lastIndexInfo.indexName();
             case "employedItemsCount" -> lastIndexInfo.employedItemsCount().toString();
             default -> throw new IllegalStateException("제대로 되지 않은 sortField입니다.");
         };
