@@ -1,6 +1,6 @@
 package org.codeiteam3.findex.autosyncconfig.repository;
 
-import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.entity.AutoSyncConfig;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
