@@ -1,8 +1,8 @@
 package org.codeiteam3.findex.indexdata.service;
 
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.common.CursorPageResponse;
-import org.codeiteam3.findex.common.CursorPageResponseMapper;
+import org.codeiteam3.findex.pagination.CursorPageResponse;
+import org.codeiteam3.findex.pagination.CursorPageResponseMapper;
 import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexdata.dto.CursorPageResponseIndexDataDto;
 import org.codeiteam3.findex.indexdata.dto.IndexDataCreateRequest;
