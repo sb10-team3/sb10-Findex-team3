@@ -28,7 +28,7 @@ public class AutoSyncConfigController {
     @GetMapping
     public ResponseEntity<CursorPageResponse<AutoSyncConfigResponseDto>> findAll(
         @RequestParam(required = false) UUID indexInfoId,
-        @RequestParam(required = false) boolean enabled,
+        @RequestParam(required = false) Boolean enabled,
         @RequestParam(required = false) UUID idAfter,
         @RequestParam(required = false) String cursor,
         @RequestParam(required = false, defaultValue = "indexInfo.indexName") String sortField,
