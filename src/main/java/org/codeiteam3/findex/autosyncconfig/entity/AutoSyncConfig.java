@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.autosyncconfig;
+package org.codeiteam3.findex.autosyncconfig.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

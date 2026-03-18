@@ -1,37 +1,39 @@
 package org.codeiteam3.findex.syncjob.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.entity.AutoSyncConfig;
 import org.codeiteam3.findex.autosyncconfig.repository.AutoSyncConfigRepository;
-import org.codeiteam3.findex.autosyncconfig.service.AutoSyncConfigService;
+import org.codeiteam3.findex.pagination.CursorPageResponse;
+import org.codeiteam3.findex.pagination.CursorPageResponseMapper;
 import org.codeiteam3.findex.enums.Result;
 import org.codeiteam3.findex.indexdata.entity.IndexData;
 import org.codeiteam3.findex.indexdata.repository.IndexDataRepository;
 import org.codeiteam3.findex.indexinfo.entity.IndexInfo;
 import org.codeiteam3.findex.indexinfo.repository.IndexInfoRepository;
 import org.codeiteam3.findex.enums.JobType;
-import org.codeiteam3.findex.syncjob.dto.IndexDataSyncRequestDto;
+import org.codeiteam3.findex.syncjob.dto.*;
 import org.codeiteam3.findex.syncjob.entity.SyncJob;
-import org.codeiteam3.findex.syncjob.dto.IndexApiResponseDto;
-import org.codeiteam3.findex.syncjob.dto.IndexApiResponseItemDto;
-import org.codeiteam3.findex.syncjob.dto.SyncJobDto;
 import org.codeiteam3.findex.syncjob.exception.ExternalApiException;
 import org.codeiteam3.findex.syncjob.mapper.SyncJobMapper;
 import org.codeiteam3.findex.syncjob.repository.SyncJobRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.codeiteam3.findex.enums.SourceType.OPEN_API;
-import static org.codeiteam3.findex.enums.Result.FAILURE;
+import static org.codeiteam3.findex.enums.Result.FAILED;
 import static org.codeiteam3.findex.enums.Result.SUCCESS;
 
 @Service
@@ -43,6 +45,7 @@ public class SyncJobService {
     private final WebClient webClient;
     private final SyncJobMapper syncJobMapper;
     private final AutoSyncConfigRepository autoSyncConfigRepository;
+    private final CursorPageResponseMapper cursorPageResponseMapper;
 
     @Value("${findex.api.key}")
     private String API_KEY;
@@ -172,7 +175,7 @@ public class SyncJobService {
                     null,
                     worker,
                     LocalDate.now(),
-                    FAILURE
+                    FAILED
             );
         }
 
@@ -275,7 +278,7 @@ public class SyncJobService {
                         LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
                         worker,
                         LocalDate.now(),
-                        FAILURE
+                        FAILED
                 );
             }
             else{
@@ -310,7 +313,7 @@ public class SyncJobService {
                     LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
                     worker,
                     LocalDate.now(),
-                    FAILURE
+                    FAILED
             );
         }
     }
@@ -332,5 +335,278 @@ public class SyncJobService {
                 jobTime,
                 result
         );
+    }
+
+    @Transactional(readOnly = true)
+    public CursorPageResponse<SyncJobDto> findAll(
+            JobType jobType,
+            UUID indexInfoId,
+            String worker,
+            LocalDateTime jobTimeFrom,
+            LocalDateTime jobTimeTo,
+            Result status,
+            UUID idAfter,
+            String cursor,
+            String sortField,
+            String sortDirection,
+            int size
+    ){
+        if(jobTimeFrom != null && jobTimeTo != null && jobTimeFrom.isAfter(jobTimeTo)){
+            throw new IllegalArgumentException("jobTimeFrom은 jobTimeTo보다 앞설 수 없습니다.");
+        }
+
+        if (size < 1) {
+            throw new IllegalArgumentException("페이지 크기(size)는 1 이상이어야 합니다.");
+        }
+
+        if (indexInfoId != null) {
+            indexInfoRepository.findById(indexInfoId)
+                    .orElseThrow(() -> new NoSuchElementException(indexInfoId + "를 가진 IndexInfo를 찾을 수 없습니다."));
+        }
+
+        String normalizedCursor = (cursor == null || cursor.isBlank()) ? null : cursor;
+
+        Set<String> allowField = Set.of("targetDate", "jobTime");
+        if (!allowField.contains(sortField)) {
+            throw new IllegalArgumentException("적합하지 않은 정렬필드(sortField)입니다.");
+        }
+
+        String normalizedSortField = sortField;
+
+        Sort.Direction normalizedDirection =
+                sortDirection.equalsIgnoreCase("asc")
+                        ? Sort.Direction.ASC
+                        : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(
+                0,
+                size,
+                Sort.by(normalizedDirection, normalizedSortField)
+                        .and(Sort.by(normalizedDirection, "id"))
+        );
+
+        LocalDate localDatejobTimeFrom = null;
+        LocalDate localDatejobTimeTo = null;
+
+        if(jobTimeFrom != null && jobTimeTo != null){
+            localDatejobTimeFrom = jobTimeFrom.toLocalDate();
+            localDatejobTimeTo = jobTimeTo.toLocalDate();
+        }
+
+        Long totalElements = syncJobRepository.countElements(
+                indexInfoId,
+                localDatejobTimeFrom,
+                localDatejobTimeTo,
+                jobType,
+                worker,
+                status
+        );
+
+        Slice<SyncJobDto> syncJobSlice =
+                findSyncJobSlice(
+                        indexInfoId,
+                        localDatejobTimeFrom,
+                        localDatejobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        normalizedCursor,
+                        normalizedSortField,
+                        normalizedDirection,
+                        pageable
+                ).map(syncJobMapper::toDto);
+
+        SyncJobDto lastSyncJob =
+                !syncJobSlice.getContent().isEmpty()
+                        ? syncJobSlice.getContent().get(syncJobSlice.getNumberOfElements() - 1)
+                        : null;
+
+        String nextCursor = null;
+        UUID nextIdAfter = null;
+
+        if (syncJobSlice.hasNext()) {
+            nextCursor = findNextCursor(lastSyncJob, normalizedSortField);
+            nextIdAfter = lastSyncJob.id();
+        }
+
+        CursorPageResponse<SyncJobDto> response =
+                cursorPageResponseMapper.fromSlice(
+                        syncJobSlice,
+                        nextCursor,
+                        nextIdAfter,
+                        totalElements
+                );
+
+        return response;
+    }
+
+    private Slice<SyncJob> findSyncJobSlice(
+            UUID indexInfoId,
+            LocalDate jobTimeFrom,
+            LocalDate jobTimeTo,
+            JobType jobType,
+            String worker,
+            Result status,
+            UUID idAfter,
+            String normalizedCursor,
+            String normalizedSortField,
+            Sort.Direction normalizedDirection,
+            Pageable pageable
+    ){
+        return switch(normalizedSortField){
+
+            case "jobTime" -> {
+                LocalDate cursorValue = parseLocalDateCursor(normalizedCursor);
+
+                boolean hasRange = jobTimeFrom != null || jobTimeTo != null;
+
+                yield cursorValue == null
+                        ? (hasRange
+                        ? syncJobRepository.findAllByJobTimeFirstPage(
+                        indexInfoId,
+                        jobTimeFrom,
+                        jobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        pageable
+                )
+                        : syncJobRepository.findAllByJobTimeFirstPageWithoutJobTime(
+                        indexInfoId,
+                        jobType,
+                        worker,
+                        status,
+                        pageable
+                ))
+                        : normalizedDirection.isDescending()
+                        ? (hasRange
+                        ? syncJobRepository.findAllByJobTimeNextPageDesc(
+                        indexInfoId,
+                        jobTimeFrom,
+                        jobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                )
+                        : syncJobRepository.findAllByJobTimeNextPageDescWithoutJobTime(
+                        indexInfoId,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                ))
+                        : (hasRange
+                        ? syncJobRepository.findAllByJobTimeNextPageAsc(
+                        indexInfoId,
+                        jobTimeFrom,
+                        jobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                )
+                        : syncJobRepository.findAllByJobTimeNextPageAscWithoutJobTime(
+                        indexInfoId,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                ));
+            }
+
+            case "targetDate" -> {
+                LocalDate cursorValue = parseLocalDateCursor(normalizedCursor);
+                boolean hasRange = jobTimeFrom != null || jobTimeTo != null;
+
+                yield cursorValue == null
+                        ? (hasRange
+                        ? syncJobRepository.findAllByTargetDateFirstPage(
+                        indexInfoId,
+                        jobTimeFrom,
+                        jobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        pageable
+                )
+                        : syncJobRepository.findAllByJobTimeFirstPageWithoutJobTime(
+                        indexInfoId,
+                        jobType,
+                        worker,
+                        status,
+                        pageable
+                ))
+                        : normalizedDirection.isDescending()
+                        ? (hasRange
+                        ? syncJobRepository.findAllByTargetDateNextPageDesc(
+                        indexInfoId,
+                        jobTimeFrom,
+                        jobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                )
+                        : syncJobRepository.findAllByTargetDateNextPageDescWithoutJobTime(
+                        indexInfoId,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                ))
+                        : (hasRange
+                        ? syncJobRepository.findAllByTargetDateNextPageAsc(
+                        indexInfoId,
+                        jobTimeFrom,
+                        jobTimeTo,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                )
+                        : syncJobRepository.findAllByTargetDateNextPageAscWithoutJobTime(
+                        indexInfoId,
+                        jobType,
+                        worker,
+                        status,
+                        idAfter,
+                        cursorValue,
+                        pageable
+                ));
+            }
+
+            default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
+        };
+    }
+
+    private LocalDate parseLocalDateCursor(String cursor){
+        if(cursor == null) return null;
+        return LocalDateTime.parse(cursor).toLocalDate();
+    }
+
+    private String findNextCursor(SyncJobDto lastSyncJob, String normalizedSortField){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        return switch(normalizedSortField){
+            case "jobTime" -> lastSyncJob.jobTime().atStartOfDay().format(formatter);
+            case "targetDate" -> lastSyncJob.targetDate().toString();
+            default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
+        };
     }
 }

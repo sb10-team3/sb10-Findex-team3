@@ -1,10 +1,10 @@
 package org.codeiteam3.findex.indexinfo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.entity.AutoSyncConfig;
 import org.codeiteam3.findex.autosyncconfig.repository.AutoSyncConfigRepository;
-import org.codeiteam3.findex.common.CursorPageResponse;
-import org.codeiteam3.findex.common.CursorPageResponseMapper;
+import org.codeiteam3.findex.pagination.CursorPageResponse;
+import org.codeiteam3.findex.pagination.CursorPageResponseMapper;
 import org.codeiteam3.findex.enums.SourceType;
 import org.codeiteam3.findex.indexinfo.dto.data.CursorPageResponseIndexInfoDto;
 import org.codeiteam3.findex.indexinfo.dto.data.IndexInfoDto;

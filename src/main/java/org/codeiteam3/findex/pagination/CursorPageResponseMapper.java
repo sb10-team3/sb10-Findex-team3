@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.common;
+package org.codeiteam3.findex.pagination;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Slice;

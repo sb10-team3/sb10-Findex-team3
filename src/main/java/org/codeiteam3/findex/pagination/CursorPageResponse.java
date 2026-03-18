@@ -1,4 +1,4 @@
-package org.codeiteam3.findex.common;
+package org.codeiteam3.findex.pagination;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

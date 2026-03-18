@@ -1,6 +1,6 @@
 package org.codeiteam3.findex.autosyncconfig.mapper;
 
-import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.entity.AutoSyncConfig;
 import org.codeiteam3.findex.autosyncconfig.dto.AutoSyncConfigResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
