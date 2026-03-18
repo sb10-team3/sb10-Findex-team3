@@ -19,7 +19,7 @@ spring:
       path: /h2-console
   jackson:
     deserialization:
-      fail-on-unknown-properties: true
+      fail-on-unknown-properties: false
 
 logging:
   level:
