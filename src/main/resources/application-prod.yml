@@ -11,8 +11,8 @@ spring:
     open-in-view: false
   sql:
     init:
-      mode: never
-#      schema-locations: classpath:schema.sql
+      mode: always
+      schema-locations: classpath:schema.sql
   jackson:
     deserialization:
       fail-on-unknown-properties: false
