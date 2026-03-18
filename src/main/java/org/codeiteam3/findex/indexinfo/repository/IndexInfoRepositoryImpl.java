@@ -165,10 +165,10 @@ public class IndexInfoRepositoryImpl implements IndexInfoRepositoryCustom {
     ) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (indexClassification != null) {
+        if (indexClassification != null && !indexClassification.isBlank()) {
             builder.and(indexInfo.indexClassification.contains(indexClassification));
         }
-        if (indexName != null) {
+        if (indexName != null && !indexName.isBlank()) {
             builder.and(indexInfo.indexName.contains(indexName));
         }
         if (favorite != null) {
