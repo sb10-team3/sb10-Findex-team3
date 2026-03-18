@@ -1,7 +1,7 @@
 package org.codeiteam3.findex.autosyncconfig.service;
 
 import lombok.RequiredArgsConstructor;
-import org.codeiteam3.findex.autosyncconfig.AutoSyncConfig;
+import org.codeiteam3.findex.autosyncconfig.entity.AutoSyncConfig;
 import org.codeiteam3.findex.autosyncconfig.dto.AutoSyncConfigResponseDto;
 import org.codeiteam3.findex.autosyncconfig.dto.AutoSyncConfigUpdateRequestDto;
 import org.codeiteam3.findex.autosyncconfig.mapper.AutoSyncConfigMapper;
@@ -39,7 +39,7 @@ public class AutoSyncConfigService {
     @Transactional(readOnly = true)
     public CursorPageResponse<AutoSyncConfigResponseDto> findAll(
             UUID indexInfoId,
-            boolean enabled,
+            Boolean enabled,
             UUID idAfter,
             String cursor,
             String sortField,
@@ -118,18 +118,20 @@ public class AutoSyncConfigService {
             Pageable pageable
     ){
 
-        return switch (sortField){
-
-            case "indexInfo.indexName" -> {
-
-                yield cursor == null
-                        ? autoSyncConfigRepository.findAllByIndexInfoFirstPage(indexInfoId, enabled, pageable)
-                        : direction.isDescending()
-                        ? autoSyncConfigRepository.findAllByIndexInfoNextPageDesc(indexInfoId, enabled, idAfter, cursor, pageable)
-                        : autoSyncConfigRepository.findAllByIndexInfoNextPageAsc(indexInfoId, enabled, idAfter, cursor, pageable);
-            }
-            default -> throw new IllegalArgumentException("제대로 되지 않은 sortField 입니다.");
-        };
+        if (cursor == null) {
+            return autoSyncConfigRepository.findAllByIndexInfoFirstPage(
+                    indexInfoId, enabled, pageable
+            );
+        }
+        if (direction.isDescending()) {
+            return autoSyncConfigRepository.findAllByIndexInfoNextPageDesc(
+                    indexInfoId, enabled, idAfter, cursor, pageable
+            );
+        } else {
+            return autoSyncConfigRepository.findAllByIndexInfoNextPageAsc(
+                    indexInfoId, enabled, idAfter, cursor, pageable
+            );
+        }
     }
 
 
