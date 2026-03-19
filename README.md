@@ -10,72 +10,15 @@
 
 ## 팀원 구성
 
-<table align="center">
-    <tr align="center">
-            <td style="min-width: 150px;">
-            <a href="https://github.com/chosi123">
-                <b>chosi123</b>
-            </a>
-        </td>
-        <td style="min-width: 150px;">
-            <a href="https://github.com/hyunjae3458">
-                <b>hyunjae3458</b>
-            </a>
-        </td>
-        <td style="min-width: 150px;">
-            <a href="https://github.com/kwaksss">
-                <b>kwaksss</b>
-            </a>
-        </td>
-        <td style="min-width: 150px;">
-            <a href="https://github.com/JungH200000">
-                <b>JungH200000</b>
-            </a>
-        </td>
-    </tr>
-    <tr align="center">
-        <td>
-            <b>이승민</b>
-        </td>
-        <td>
-            <b>김현재</b>
-        </td>
-        <td>
-            <b>곽인성</b>
-        </td>
-        <td>
-            <b>박정현</b>
-        </td>
-    </tr>
-    <tr align="center">
-        <td>
-            <b>Leader</b>, Backend
-        </td>
-        <td>
-            Backend
-        </td>
-        <td>
-            Backend
-        </td>
-        <td>
-            Backend
-        </td>
-    </tr>
-    <tr align="center">
-        <td>
-            연동 작업, 자동 연동 설정 API 구현
-        </td>
-        <td>
-            지수 데이터 대시보드 API 구현
-        </td>
-        <td>
-            지수 정보 API 구현
-        </td>
-        <td>
-            지수 데이터 API 구현, 공통 API 처리 구성
-        </td>
-    </tr>
-</table>
+<div align="center">
+
+| 👑 **Leader** | 👥 **Member** | 👥 **Member** | 👥 **Member** |
+| :-----------: | :-----------: | :-----------: | :-----------: |
+| **이승민**<br><sup>[chosi123](https://github.com/chosi123)</sup> | **김현재**<br><sup>[hyunjae3458](https://github.com/hyunjae3458)</sup> | **곽인성**<br><sup>[kwaksss](https://github.com/kwaksss)</sup> | **박정현**<br><sup>[JungH200000](https://github.com/JungH200000)</sup> |
+| <img src="https://img.shields.io/badge/Leader-%23F05032?style=for-the-badge&logo=git&logoColor=white" alt="Leader" /> <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> |
+| 연동 작업 및 자동 연동 설정 API 구현 | 지수 데이터 대시보드 API 구현 | 지수 정보 API 구현 | 지수 데이터 API 구현<br>공통 API 처리 기반 구성 |
+
+</div>
 
 ---
 
