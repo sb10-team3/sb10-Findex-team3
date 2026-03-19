@@ -10,15 +10,11 @@
 
 ## 팀원 구성
 
-
-
 | 👑 **Leader** | 👥 **Member** | 👥 **Member** | 👥 **Member** |
 | :-----------: | :-----------: | :-----------: | :-----------: |
 | **이승민**<br><sup>[chosi123](https://github.com/chosi123)</sup> | **김현재**<br><sup>[hyunjae3458](https://github.com/hyunjae3458)</sup> | **곽인성**<br><sup>[kwaksss](https://github.com/kwaksss)</sup> | **박정현**<br><sup>[JungH200000](https://github.com/JungH200000)</sup> |
 | <img src="https://img.shields.io/badge/Leader-%23F05032?style=for-the-badge&logo=git&logoColor=white" alt="Leader" /> <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> |
 | 연동 작업 및 자동 연동 설정 API 구현 | 지수 대시보드 API 구현 | 지수 정보 API 구현 | 지수 데이터 API 구현<br>공통 API 처리 기반 구성 |
-
-
 
 ---
 
@@ -49,6 +45,18 @@
 ### 협업
 
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" /> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" /> <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white" />
+
+---
+
+## ERD
+
+<img width="859" height="545" alt="스크린샷 2026-03-19 152548" src="https://github.com/user-attachments/assets/b2b4667c-8b64-4473-96d7-7107e67c2d8a" />
+
+---
+
+## Architecture
+
+<img width="1407" height="974" alt="Codeit Sprint Spring 백엔드 초급 프로젝트 Architecture" src="https://github.com/user-attachments/assets/e43bec3c-04d4-4f7d-9aa5-169d4c16da9b" />
 
 ---
 
