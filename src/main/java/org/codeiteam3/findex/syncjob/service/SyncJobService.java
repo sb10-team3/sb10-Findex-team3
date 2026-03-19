@@ -134,7 +134,7 @@ public class SyncJobService {
             if(indexInfo != null){
                 indexInfo.update(
                         Integer.parseInt(item.epyItmsCnt()),
-                        LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                        LocalDate.parse(item.basPntm(), DateTimeFormatter.ofPattern("yyyyMMdd")),
                         new BigDecimal(item.basIdx()),
                         null
                 );
@@ -148,7 +148,7 @@ public class SyncJobService {
                         item.idxCsf(),
                         item.idxNm(),
                         Integer.parseInt(item.epyItmsCnt()),
-                        LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                        LocalDate.parse(item.basPntm(), DateTimeFormatter.ofPattern("yyyyMMdd")),
                         new BigDecimal(item.basIdx()),
                         OPEN_API,
                         false
@@ -163,7 +163,7 @@ public class SyncJobService {
                     item.idxCsf(),
                     item.idxNm(),
                     Integer.parseInt(item.epyItmsCnt()),
-                    LocalDate.parse(item.basDt(), DateTimeFormatter.ofPattern("yyyyMMdd")),
+                    LocalDate.parse(item.basPntm(), DateTimeFormatter.ofPattern("yyyyMMdd")),
                     new BigDecimal(item.basIdx()),
                     OPEN_API,
                     false
