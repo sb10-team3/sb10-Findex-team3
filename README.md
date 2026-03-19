@@ -16,7 +16,7 @@
 | :-----------: | :-----------: | :-----------: | :-----------: |
 | **이승민**<br><sup>[chosi123](https://github.com/chosi123)</sup> | **김현재**<br><sup>[hyunjae3458](https://github.com/hyunjae3458)</sup> | **곽인성**<br><sup>[kwaksss](https://github.com/kwaksss)</sup> | **박정현**<br><sup>[JungH200000](https://github.com/JungH200000)</sup> |
 | <img src="https://img.shields.io/badge/Leader-%23F05032?style=for-the-badge&logo=git&logoColor=white" alt="Leader" /> <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> | <img src="https://img.shields.io/badge/Backend-007ACC?style=for-the-badge&logo=spring&logoColor=white" alt="Backend" /> |
-| 연동 작업 및 자동 연동 설정 API 구현 | 지수 데이터 대시보드 API 구현 | 지수 정보 API 구현 | 지수 데이터 API 구현<br>공통 API 처리 기반 구성 |
+| 연동 작업 및 자동 연동 설정 API 구현 | 지수 대시보드 API 구현 | 지수 정보 API 구현 | 지수 데이터 API 구현<br>공통 API 처리 기반 구성 |
 
 </div>
 
