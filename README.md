@@ -172,7 +172,6 @@ src/
 
 ## 프로젝트 회고록
 
-- [[바로가기] Findex 발표 자료]()
 - [[바로가기] 프로젝트 회고록](https://www.notion.so/jungh20000/4Ls-Retrospective-327f59816c0280c4b2eae058cf64cf1a?source=copy_link)
 
 ---
